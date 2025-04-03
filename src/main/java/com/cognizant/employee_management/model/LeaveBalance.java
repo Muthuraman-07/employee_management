@@ -10,5 +10,5 @@ public class LeaveBalance {
 	private String LeaveType;
 	private int Balance;
 	
-
+	private Employee employee;
 }
