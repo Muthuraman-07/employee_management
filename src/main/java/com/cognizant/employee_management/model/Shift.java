@@ -1,5 +1,19 @@
 package com.cognizant.employee_management.model;
 
-public class Shift {
+import java.time.LocalDate;
+import java.time.LocalTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Data;
+
+@Data
+@Entity
+public class Shift {
+	@Id
+    private int shiftId;
+    private LocalDate shiftDate;
+    private LocalTime shiftStartTime;
+    private LocalTime shiftEndTime;
+    
 }

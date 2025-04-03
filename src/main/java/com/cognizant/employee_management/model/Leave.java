@@ -1,14 +1,34 @@
 package com.cognizant.employee_management.model;
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 @Data
+@Entity
+@Table(name="employee_leave")
 public class Leave {
+	@Id
 	private int leaveId;
-	private int employeeId;
-	private Date appliedDate;
+	@ManyToOne
+	@JoinColumn(name="employeeId")
+    private Employee employee;
+	@Temporal(TemporalType.TIMESTAMP)
+	private LocalDateTime appliedDate;
+	@Column(length = 30)
 	private String leaveType;
-	private Date startDate;
-	private Date endDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private LocalDateTime startDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private LocalDateTime endDate;
+	@Column(length = 20)
 	private String status;
-	private Date approvedDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private LocalDateTime approvedDate;
 }
