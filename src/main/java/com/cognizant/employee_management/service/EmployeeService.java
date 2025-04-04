@@ -6,4 +6,5 @@ import com.cognizant.employee_management.dto.EmployeeDto;
 
 public interface EmployeeService {
 	List<EmployeeDto> getAllEmployees();
+	EmployeeDto createEmployee(EmployeeDto employeeDto);
 }

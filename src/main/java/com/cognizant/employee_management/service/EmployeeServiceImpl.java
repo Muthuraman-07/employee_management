@@ -1,5 +1,5 @@
 package com.cognizant.employee_management.service;
-
+import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,28 +15,23 @@ public class EmployeeServiceImpl implements EmployeeService
 {
 	@Autowired
     private EmployeeRepository employeeRepository;
-	
+
+    @Autowired
+    private ModelMapper modelMapper;
+    
 	@Override
     public List<EmployeeDto> getAllEmployees() {
-        return employeeRepository.findAll()
-                .stream()
-                .map(this::convertToDTO)
+		List<Employee> employees=employeeRepository.findAll();
+        return employees.stream()
+                .map(employee -> modelMapper.map(employee, EmployeeDto.class))
                 .collect(Collectors.toList());
     }
-	// Convert Entity to DTO
-    private EmployeeDto convertToDTO(Employee employee) {
-        EmployeeDto dto = new EmployeeDto();
-        dto.setEmployeeId(employee.getEmployeeId());
-        dto.setUsername(employee.getUsername());
-        dto.setFirstName(employee.getFirstName());
-        dto.setLastName(employee.getLastName());
-        dto.setEmail(employee.getEmail());
-        dto.setPhoneNumber(employee.getPhoneNumber());
-        dto.setDepartment(employee.getDepartment());
-        dto.setRole(employee.getRole());
-        dto.setJoinedDate(employee.getJoinedDate());
-        return dto;
-    }
-
-
+	
+	@Override
+	public EmployeeDto createEmployee(EmployeeDto employeeDto)
+	{
+		Employee employee=modelMapper.map(employeeDto,Employee.class);
+		Employee saved=employeeRepository.save(employee);
+		return modelMapper.map(saved, EmployeeDto.class);
+	}
 }
