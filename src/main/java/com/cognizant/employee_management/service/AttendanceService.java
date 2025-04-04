@@ -1,5 +1,9 @@
 package com.cognizant.employee_management.service;
 
-public interface AttendanceService {
+import java.util.List;
 
+import com.cognizant.employee_management.model.Attendance;
+
+public interface AttendanceService {
+    List<Attendance> getAllAttendance();
 }

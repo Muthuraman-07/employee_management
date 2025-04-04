@@ -1,6 +1,5 @@
 package com.cognizant.employee_management.model;
 
-//import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
