@@ -1,9 +1,13 @@
 package com.cognizant.employee_management.service;
 import org.modelmapper.ModelMapper;
+
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.cognizant.employee_management.dto.EmployeeDto;
@@ -34,4 +38,53 @@ public class EmployeeServiceImpl implements EmployeeService
 		Employee saved=employeeRepository.save(employee);
 		return modelMapper.map(saved, EmployeeDto.class);
 	}
+	
+	@Override
+	public EmployeeDto updateEmployee(int id, EmployeeDto employeeDto) {
+	    Employee existing = employeeRepository.findById(id)
+	        .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+	 
+	    existing.setUsername(employeeDto.getUsername());
+	    existing.setFirstName(employeeDto.getFirstName());
+	    existing.setLastName(employeeDto.getLastName());
+	    existing.setEmail(employeeDto.getEmail());
+	    existing.setPhoneNumber(employeeDto.getPhoneNumber());
+	    existing.setDepartment(employeeDto.getDepartment());
+	    existing.setRole(employeeDto.getRole());
+	    existing.setJoinedDate(employeeDto.getJoinedDate());
+	    existing.setManagerId(employeeDto.getManagerId());
+	    existing.setUsername(employeeDto.getUsername());
+	    existing.setPassword(employeeDto.getPassword());
+	    existing.setShift(employeeDto.getShift());
+	 
+	    Employee updated = employeeRepository.save(existing);
+	    return modelMapper.map(updated,EmployeeDto.class);
+	}
+	
+	@Override
+	public EmployeeDto patchEmployee(int id, Map<String, Object> updates) {
+	    Employee employee = employeeRepository.findById(id)
+	        .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+	 
+	    updates.forEach((key, value) -> {
+	        Field field = ReflectionUtils.findRequiredField(Employee.class, key);
+	        if (field != null) {
+	            field.setAccessible(true);
+	            ReflectionUtils.setField(field, employee, value);
+	        }
+	    });
+	 
+	    Employee updated = employeeRepository.save(employee);
+	    return modelMapper.map(updated,EmployeeDto.class);
+	}
+	
+	@Override
+	public void deleteEmployee(int id) {
+	    if (!employeeRepository.existsById(id)) {
+	        throw new RuntimeException("Employee not found with id: " + id);
+	    }
+	    employeeRepository.deleteById(id);
+	}
+	
+	
 }

@@ -8,4 +8,5 @@ import com.cognizant.employee_management.model.Employee;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
 //	List<Employee> findAll();
+	
 }

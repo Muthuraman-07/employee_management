@@ -9,11 +9,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Data;
-
+import jakarta.persistence.*;
 @Entity
 @Data
 public class Attendance {
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int attendanceID;
 	@ManyToOne
 	@JoinColumn(name="employeeId")

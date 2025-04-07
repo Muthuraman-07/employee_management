@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.cognizant.employee_management.model.Employee;
 
+import lombok.Data;
+@Data
 public class LeaveDto {
 	private int leaveId;
     private Employee employee;
@@ -11,5 +13,6 @@ public class LeaveDto {
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
 	private String status;
+	private String leaveType;
 	private LocalDateTime approvedDate;
 }

@@ -1,5 +1,9 @@
 package com.cognizant.employee_management.repository;
 
-public class LeaveRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.cognizant.employee_management.model.Leave;
+
+public interface LeaveRepository extends JpaRepository<Leave, Integer>{
 
 }

@@ -1,13 +1,22 @@
 package com.cognizant.employee_management.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cognizant.employee_management.dto.AttendanceDto;
 import com.cognizant.employee_management.model.Attendance;
 import com.cognizant.employee_management.service.AttendanceService;
  
@@ -22,5 +31,39 @@ public class AttendanceController {
     public ResponseEntity<List<Attendance>> getAllAttendance() {
         List<Attendance> attendanceList = attendanceService.getAllAttendance();
         return ResponseEntity.ok(attendanceList);
+    }
+    
+    @PostMapping("/saveAttendance")
+	public ResponseEntity<AttendanceDto> createAttedance(@RequestBody AttendanceDto attendanceDto) {
+    	AttendanceDto saved= attendanceService.createAttendance(attendanceDto);
+		return new ResponseEntity<>(saved, HttpStatus.OK);
+	
+}
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<AttendanceDto> updateAttendance(
+            @PathVariable int id,
+            @RequestBody AttendanceDto attendanceDto) {
+        return ResponseEntity.ok(attendanceService.updateAttendance(id, attendanceDto));
+    }
+    
+//    @PatchMapping("/{id}/clockout")
+//
+//    public ResponseEntity<AttendanceDto> patchClockOut(
+//            @PathVariable int id,
+//            @RequestBody LocalDateTime clockOutTime) {
+//        return ResponseEntity.ok(attendanceService.patchClockOutTime(id, clockOutTime));
+//    }
+ 
+    @PatchMapping("/patchAttendance/{id}")
+    public ResponseEntity<AttendanceDto> patchAttendance(@PathVariable int id, @RequestBody AttendanceDto attendanceDto) {
+        AttendanceDto updated = attendanceService.patchAttendance(id, attendanceDto);
+        return ResponseEntity.ok(updated);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAttendance(@PathVariable int id) {
+        attendanceService.deleteAttendance(id);
+        return ResponseEntity.ok("Deleted successfully.");
     }
 }
