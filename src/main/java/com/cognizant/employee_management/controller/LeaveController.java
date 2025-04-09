@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.employee_management.dto.LeaveDto;
+import com.cognizant.employee_management.dto.returnleavedto;
 import com.cognizant.employee_management.service.LeaveService;
 
 @RestController
@@ -25,7 +26,7 @@ public class LeaveController {
     private LeaveService leaveService;
  
     @GetMapping("/all")
-    public List<LeaveDto> getAllLeaves() {
+    public List<returnleavedto> getAllLeaves() {
         return leaveService.getAllLeaves();
     }
  
@@ -53,6 +54,12 @@ public class LeaveController {
     public ResponseEntity<?> deleteLeave(@PathVariable int id) {
         leaveService.deleteLeave(id);
         return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("/applyLeave/{id}")
+    public ResponseEntity<String> applyLeave(@PathVariable int id,@RequestBody LeaveDto leaveDto) {
+    	leaveService.applyLeave(id,leaveDto);
+        return ResponseEntity.ok("Created");
     }
 
 }

@@ -44,17 +44,11 @@ public class EmployeeServiceImpl implements EmployeeService
 	    Employee existing = employeeRepository.findById(id)
 	        .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
 	 
-	    existing.setUsername(employeeDto.getUsername());
 	    existing.setFirstName(employeeDto.getFirstName());
 	    existing.setLastName(employeeDto.getLastName());
-	    existing.setEmail(employeeDto.getEmail());
-	    existing.setPhoneNumber(employeeDto.getPhoneNumber());
 	    existing.setDepartment(employeeDto.getDepartment());
 	    existing.setRole(employeeDto.getRole());
-	    existing.setJoinedDate(employeeDto.getJoinedDate());
 	    existing.setManagerId(employeeDto.getManagerId());
-	    existing.setUsername(employeeDto.getUsername());
-	    existing.setPassword(employeeDto.getPassword());
 	    existing.setShift(employeeDto.getShift());
 	 
 	    Employee updated = employeeRepository.save(existing);

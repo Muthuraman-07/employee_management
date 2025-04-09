@@ -54,24 +54,6 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService{
         return modelMapper.map(updated, LeaveBalanceDto.class);
     }
  
-    @Override
-    public LeaveBalanceDto patchLeaveBalance(int id, LeaveBalanceDto leaveBalanceDto) {
-        LeaveBalance existing = leaveBalanceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("LeaveBalance not found"));
- 
-        if (leaveBalanceDto.getEmployee() != null) {
-            existing.setEmployee(leaveBalanceDto.getEmployee());
-        }
-        if (leaveBalanceDto.getLeaveType() != null) {
-            existing.setLeaveType(leaveBalanceDto.getLeaveType());
-        }
-        if (leaveBalanceDto.getBalance() != 0) {
-            existing.setBalance(leaveBalanceDto.getBalance());
-        }
- 
-        LeaveBalance patched = leaveBalanceRepository.save(existing);
-        return modelMapper.map(patched, LeaveBalanceDto.class);
-    }
  
     @Override
     public void deleteLeaveBalance(int id) {

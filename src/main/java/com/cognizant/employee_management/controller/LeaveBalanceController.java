@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,7 +33,7 @@ public class LeaveBalanceController {
         return leaveBalanceService.getLeaveBalanceById(id);
     }
  
-    @GetMapping
+    @GetMapping("getAll")
     public List<LeaveBalanceDto> getAll() {
         return leaveBalanceService.getAllLeaveBalances();
     }
@@ -44,10 +43,6 @@ public class LeaveBalanceController {
         return leaveBalanceService.updateLeaveBalance(id, dto);
     }
  
-    @PatchMapping("/{id}")
-    public LeaveBalanceDto patch(@PathVariable int id, @RequestBody LeaveBalanceDto dto) {
-        return leaveBalanceService.patchLeaveBalance(id, dto);
-    }
  
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
