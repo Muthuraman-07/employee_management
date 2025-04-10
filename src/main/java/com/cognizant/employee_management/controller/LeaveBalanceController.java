@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cognizant.employee_management.dto.LeaveBalanceDto;
 import com.cognizant.employee_management.service.LeaveBalanceService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/leavebalance")
 public class LeaveBalanceController {
@@ -25,7 +26,7 @@ public class LeaveBalanceController {
     private LeaveBalanceService leaveBalanceService;
  
     @PostMapping
-    public LeaveBalanceDto create(@RequestBody LeaveBalanceDto dto) {
+    public LeaveBalanceDto create(@Valid @RequestBody LeaveBalanceDto dto) {
         return leaveBalanceService.createLeaveBalance(dto);
     }
  
@@ -34,20 +35,16 @@ public class LeaveBalanceController {
         return leaveBalanceService.getLeaveBalanceById(id);
     }
  
-    @GetMapping
+    @GetMapping("getAll")
     public List<LeaveBalanceDto> getAll() {
         return leaveBalanceService.getAllLeaveBalances();
     }
  
     @PutMapping("/{id}")
-    public LeaveBalanceDto update(@PathVariable int id, @RequestBody LeaveBalanceDto dto) {
+    public LeaveBalanceDto update(@PathVariable int id,@Valid @RequestBody LeaveBalanceDto dto) {
         return leaveBalanceService.updateLeaveBalance(id, dto);
     }
  
-    @PatchMapping("/{id}")
-    public LeaveBalanceDto patch(@PathVariable int id, @RequestBody LeaveBalanceDto dto) {
-        return leaveBalanceService.patchLeaveBalance(id, dto);
-    }
  
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {

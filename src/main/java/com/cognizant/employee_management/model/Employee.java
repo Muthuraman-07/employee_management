@@ -7,32 +7,64 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 @Entity
 public class Employee {
-	@Id
-	private int employeeId;
-	private int managerId;
-	@Column(length = 50)
-	private String username;
-	@Column(length = 50)
-	private String password;
-	@Column(length = 50)
-	private String firstName;
-	@Column(length = 50)
-	private String lastName;
-	@Column(length = 50)
-	private String email;
-	@Column(length = 12)
-	private String phoneNumber;
-	@Column(length = 50)
-	private String department;
-	@Column(length = 50)
-	private String role;
-	@ManyToOne
-	@JoinColumn(name="shiftId")
+    @Id
+    private int employeeId;
+
+    private int managerId;
+
+    @Column(length = 50)
+    @NotNull(message = "Username should not be null")
+    @Size(min = 2, max=50, message="Username must be between 2 and 50 characters")
+    private String username;
+
+    @Column(length = 50)
+    @NotNull(message = "Password should not be null")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number")
+    private String password;
+
+    @Column(length = 50)
+    @NotNull(message = "First name should not be null")
+    private String firstName;
+
+    @Column(length = 50)
+    @NotNull(message = "Last name should not be null")
+    private String lastName;
+
+    @Column(length = 50)
+    @NotNull(message = "Email should not be null")
+    @Email(message = "Email should be valid")
+    private String email;
+
+    @Column(length = 12)
+    @NotNull(message = "Phone number should not be null")
+    @Pattern(regexp = "^\\d{10}$", message = "Phone number should be 10 digits")
+    private String phoneNumber;
+
+    @Column(length = 50)
+    @NotNull(message = "Department should not be null")
+    private String department;
+
+    @Column(length = 50)
+    @NotNull(message = "Role should not be null")
+    private String role;
+
+    @ManyToOne
+    @JoinColumn(name = "shiftId")
+    @NotNull(message = "Shift should not be null")
     private Shift shift;
-	private LocalDate joinedDate;
+
+    @NotNull(message = "Joined date should not be null")
+    @Past(message = "Joined date must be in the past")
+    private LocalDate joinedDate;
 }

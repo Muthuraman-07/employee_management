@@ -1,6 +1,5 @@
 package com.cognizant.employee_management.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cognizant.employee_management.dto.AttendanceDto;
 import com.cognizant.employee_management.model.Attendance;
 import com.cognizant.employee_management.service.AttendanceService;
+
+import jakarta.validation.Valid;
  
 @RestController
 @RequestMapping("/api/attendance")
@@ -34,7 +35,7 @@ public class AttendanceController {
     }
     
     @PostMapping("/saveAttendance")
-	public ResponseEntity<AttendanceDto> createAttedance(@RequestBody AttendanceDto attendanceDto) {
+	public ResponseEntity<AttendanceDto> createAttedance(@Valid @RequestBody AttendanceDto attendanceDto) {
     	AttendanceDto saved= attendanceService.createAttendance(attendanceDto);
 		return new ResponseEntity<>(saved, HttpStatus.OK);
 	
@@ -43,7 +44,7 @@ public class AttendanceController {
     @PutMapping("/{id}")
     public ResponseEntity<AttendanceDto> updateAttendance(
             @PathVariable int id,
-            @RequestBody AttendanceDto attendanceDto) {
+            @Valid @RequestBody AttendanceDto attendanceDto) {
         return ResponseEntity.ok(attendanceService.updateAttendance(id, attendanceDto));
     }
     
@@ -56,7 +57,7 @@ public class AttendanceController {
 //    }
  
     @PatchMapping("/patchAttendance/{id}")
-    public ResponseEntity<AttendanceDto> patchAttendance(@PathVariable int id, @RequestBody AttendanceDto attendanceDto) {
+    public ResponseEntity<AttendanceDto> patchAttendance(@PathVariable int id,@RequestBody AttendanceDto attendanceDto) {
         AttendanceDto updated = attendanceService.patchAttendance(id, attendanceDto);
         return ResponseEntity.ok(updated);
     }

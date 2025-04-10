@@ -9,6 +9,5 @@ public interface EmployeeService {
 	List<EmployeeDto> getAllEmployees();
 	EmployeeDto createEmployee(EmployeeDto employeeDto);
 	EmployeeDto updateEmployee(int id, EmployeeDto employeeDto);
-	EmployeeDto patchEmployee(int id,Map<String, Object> updates);
 	void deleteEmployee(int id);
 }

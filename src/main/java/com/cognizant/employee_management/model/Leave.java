@@ -1,37 +1,56 @@
 package com.cognizant.employee_management.model;
+
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+
 @Data
 @Entity
-@Table(name="employee_leave")
+@Table(name = "employee_leave")
 public class Leave {
+<<<<<<< Updated upstream
 	@Id
-//	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int leaveId;
 	@ManyToOne
 	@JoinColumn(name="employeeId")
+=======
+    @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int leaveId;
+
+    @ManyToOne
+    @JoinColumn(name = "employeeId")
+    @NotNull(message = "Employee should not be null")
+>>>>>>> Stashed changes
     private Employee employee;
-	@Temporal(TemporalType.TIMESTAMP)
-	private LocalDateTime appliedDate;
-	@Column(length = 30)
-	private String leaveType;
-	@Temporal(TemporalType.TIMESTAMP)
-	private LocalDateTime startDate;
-	@Temporal(TemporalType.TIMESTAMP)
-	private LocalDateTime endDate;
-	@Column(length = 20)
-	private String status;
-	@Temporal(TemporalType.TIMESTAMP)
-	private LocalDateTime approvedDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull(message = "Applied date should not be null")
+    @PastOrPresent(message = "Applied date must be in the past or present")
+    private LocalDateTime appliedDate;
+
+    @Column(length = 30)
+    @NotNull(message = "Leave type should not be null")
+    @Size(min = 2, max = 30, message = "Leave type must be between 2 and 30 characters")
+    private String leaveType;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull(message = "Start date should not be null")
+    @FutureOrPresent(message = "Start date must be in the present or future")
+    private LocalDateTime startDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull(message = "End date should not be null")
+    @Future(message = "End date must be in the future")
+    private LocalDateTime endDate;
+
+    @Column(length = 20)
+    @NotNull(message = "Status should not be null")
+    @Size(min = 2, max = 20, message = "Status must be between 2 and 20 characters")
+    private String status;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime approvedDate;
 }

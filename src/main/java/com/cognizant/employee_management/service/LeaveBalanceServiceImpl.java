@@ -6,59 +6,69 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cognizant.employee_management.dto.LeaveBalanceDto;
 import com.cognizant.employee_management.model.LeaveBalance;
 import com.cognizant.employee_management.repository.LeaveBalanceRepository;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 @Service
-public class LeaveBalanceServiceImpl implements LeaveBalanceService{
-	
-	@Autowired
-    private LeaveBalanceRepository leaveBalanceRepository;
- 
+public class LeaveBalanceServiceImpl implements LeaveBalanceService {
+
     @Autowired
     private ModelMapper modelMapper;
- 
+    
+    @Autowired
+    private LeaveBalanceRepository leaveBalanceRepository;
     @Override
-    public LeaveBalanceDto createLeaveBalance(LeaveBalanceDto leaveBalanceDto) {
+    @Transactional
+    public LeaveBalanceDto createLeaveBalance(@Valid @NotNull LeaveBalanceDto leaveBalanceDto) {
         LeaveBalance leaveBalance = modelMapper.map(leaveBalanceDto, LeaveBalance.class);
         LeaveBalance saved = leaveBalanceRepository.save(leaveBalance);
         return modelMapper.map(saved, LeaveBalanceDto.class);
     }
- 
+
     @Override
     public LeaveBalanceDto getLeaveBalanceById(int id) {
         LeaveBalance leaveBalance = leaveBalanceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("LeaveBalance not found"));
         return modelMapper.map(leaveBalance, LeaveBalanceDto.class);
     }
- 
+
     @Override
     public List<LeaveBalanceDto> getAllLeaveBalances() {
         return leaveBalanceRepository.findAll().stream()
                 .map(lb -> modelMapper.map(lb, LeaveBalanceDto.class))
                 .collect(Collectors.toList());
     }
- 
+
     @Override
-    public LeaveBalanceDto updateLeaveBalance(int id, LeaveBalanceDto leaveBalanceDto) {
+    @Transactional
+    public LeaveBalanceDto updateLeaveBalance(int id, @Valid @NotNull LeaveBalanceDto leaveBalanceDto) {
         LeaveBalance existing = leaveBalanceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("LeaveBalance not found"));
- 
+
         existing.setEmployee(leaveBalanceDto.getEmployee());
         existing.setLeaveType(leaveBalanceDto.getLeaveType());
         existing.setBalance(leaveBalanceDto.getBalance());
- 
+
         LeaveBalance updated = leaveBalanceRepository.save(existing);
         return modelMapper.map(updated, LeaveBalanceDto.class);
     }
+<<<<<<< Updated upstream
  
+ 
+=======
+
     @Override
-    public LeaveBalanceDto patchLeaveBalance(int id, LeaveBalanceDto leaveBalanceDto) {
+    @Transactional
+    public LeaveBalanceDto patchLeaveBalance(int id,@NotNull LeaveBalanceDto leaveBalanceDto) {
         LeaveBalance existing = leaveBalanceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("LeaveBalance not found"));
- 
+
         if (leaveBalanceDto.getEmployee() != null) {
             existing.setEmployee(leaveBalanceDto.getEmployee());
         }
@@ -68,14 +78,18 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService{
         if (leaveBalanceDto.getBalance() != 0) {
             existing.setBalance(leaveBalanceDto.getBalance());
         }
- 
+
         LeaveBalance patched = leaveBalanceRepository.save(existing);
         return modelMapper.map(patched, LeaveBalanceDto.class);
     }
- 
+
+>>>>>>> Stashed changes
     @Override
+    @Transactional
     public void deleteLeaveBalance(int id) {
+        if (!leaveBalanceRepository.existsById(id)) {
+            throw new RuntimeException("LeaveBalance not found");
+        }
         leaveBalanceRepository.deleteById(id);
     }
-
 }

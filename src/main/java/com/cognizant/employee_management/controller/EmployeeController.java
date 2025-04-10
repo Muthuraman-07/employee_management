@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cognizant.employee_management.dto.EmployeeDto;
 import com.cognizant.employee_management.service.EmployeeService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
@@ -33,13 +35,13 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/createEmployee")
-	public ResponseEntity<EmployeeDto> createEmployees(@RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<EmployeeDto> createEmployees(@Valid @RequestBody EmployeeDto employeeDto) {
 		EmployeeDto saved=employeeService.createEmployee(employeeDto);
 		return new ResponseEntity<>(saved, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable int id, @RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable int id,@Valid @RequestBody EmployeeDto employeeDto) {
 	    EmployeeDto updated = employeeService.updateEmployee(id, employeeDto);
 	    return ResponseEntity.ok(updated);
 	}
