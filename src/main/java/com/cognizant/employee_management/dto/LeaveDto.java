@@ -2,23 +2,14 @@ package com.cognizant.employee_management.dto;
 
 import java.time.LocalDateTime;
 
-<<<<<<< Updated upstream
-=======
 import com.cognizant.employee_management.model.Employee;
 
 import jakarta.validation.constraints.*;
->>>>>>> Stashed changes
+
 import lombok.Data;
 
 @Data
 public class LeaveDto {
-<<<<<<< Updated upstream
-	private int leaveId;
-	private LocalDateTime appliedDate;
-	private LocalDateTime startDate;
-	private LocalDateTime endDate;
-	private String leaveType;
-=======
     @NotNull(message = "Leave ID cannot be null")
     @Min(value = 1, message = "Leave ID must be greater than zero")
     private int leaveId;
@@ -47,5 +38,5 @@ public class LeaveDto {
     private String leaveType;
 
     private LocalDateTime approvedDate;
->>>>>>> Stashed changes
+
 }

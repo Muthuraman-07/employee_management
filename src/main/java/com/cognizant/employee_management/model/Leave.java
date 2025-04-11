@@ -10,12 +10,6 @@ import lombok.Data;
 @Entity
 @Table(name = "employee_leave")
 public class Leave {
-<<<<<<< Updated upstream
-	@Id
-	private int leaveId;
-	@ManyToOne
-	@JoinColumn(name="employeeId")
-=======
     @Id
     // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int leaveId;
@@ -23,7 +17,6 @@ public class Leave {
     @ManyToOne
     @JoinColumn(name = "employeeId")
     @NotNull(message = "Employee should not be null")
->>>>>>> Stashed changes
     private Employee employee;
 
     @Temporal(TemporalType.TIMESTAMP)

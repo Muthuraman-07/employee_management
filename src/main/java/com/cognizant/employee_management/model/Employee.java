@@ -27,7 +27,7 @@ public class Employee {
     @Size(min = 2, max=50, message="Username must be between 2 and 50 characters")
     private String username;
 
-    @Column(length = 50)
+    @Column(length = 255)
     @NotNull(message = "Password should not be null")
     @Size(min = 8, message = "Password must be at least 8 characters")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", message = "Password must contain at least one uppercase letter, one lowercase letter, and one number")

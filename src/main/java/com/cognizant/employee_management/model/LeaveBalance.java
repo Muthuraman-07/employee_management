@@ -17,16 +17,16 @@ public class LeaveBalance {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int leaveBalanceID;
+	
 	@ManyToOne
 	@JoinColumn(name="employeeId")
 	@NotNull(message = "Employee should not be null")
     private Employee employee;
 	
 	@Column(length = 20)
-<<<<<<< Updated upstream
 	private String leaveType;
 	private int balance;
-=======
+
 	@NotNull(message = "Leave type should not be null")
 	@Size(min = 2, max = 20, message = "Leave type must be between 2 and 20 characters")
 	private String LeaveType;
@@ -34,5 +34,5 @@ public class LeaveBalance {
 	@NotNull(message = "Balance should not be null")
 	@PositiveOrZero(message = "Balance must be zero or positive")
 	private int Balance;
->>>>>>> Stashed changes
+
 }

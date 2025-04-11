@@ -1,5 +1,7 @@
 package com.cognizant.employee_management.dto;
 
+import java.time.LocalDate;
+
 import com.cognizant.employee_management.model.Shift;
 
 import jakarta.validation.constraints.*;
@@ -7,15 +9,7 @@ import lombok.Data;
 
 @Data
 public class EmployeeDto {
-<<<<<<< Updated upstream
-	private int employeeId;
-	private int managerId;
-	private String firstName;
-	private String lastName;
-	private String department;
-	private String role;
-    private Shift shift;
-=======
+	
     @NotNull(message = "Employee ID cannot be null")
     @Min(value = 1, message = "Employee ID must be greater than zero")
     private int employeeId;
@@ -63,5 +57,5 @@ public class EmployeeDto {
     @NotNull(message = "Joined Date cannot be null")
     @Past(message = "Joined Date must be in the past")
     private LocalDate joinedDate;
->>>>>>> Stashed changes
+
 }

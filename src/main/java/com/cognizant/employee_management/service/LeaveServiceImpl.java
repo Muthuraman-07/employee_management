@@ -129,71 +129,72 @@ public class LeaveServiceImpl implements LeaveService {
 		leaveBalance.setBalance(leaveBalance.getBalance() - leaveDays);
 		leaveBalanceRepository.save(leaveBalance);
 	}
-
-    @Autowired
-    private LeaveRepository leaveRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Override
-    public List<LeaveDto> getAllLeaves() {
-        return leaveRepository.findAll().stream()
-                .map(leave -> modelMapper.map(leave, LeaveDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public LeaveDto getLeaveById(int id) {
-        Leave leave = leaveRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Leave not found with id: " + id));
-        return modelMapper.map(leave, LeaveDto.class);
-    }
-
-    @Override
-    @Transactional
-    public LeaveDto createLeave(@Valid @NotNull LeaveDto leaveDto) {
-        Leave leave = modelMapper.map(leaveDto, Leave.class);
-        Leave savedLeave = leaveRepository.save(leave);
-        return modelMapper.map(savedLeave, LeaveDto.class);
-    }
-
-    @Override
-    @Transactional
-    public LeaveDto updateLeave(int id, @Valid @NotNull LeaveDto leaveDto) {
-        Leave existingLeave = leaveRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Leave not found with id: " + id));
-
-        leaveDto.setLeaveId(id);
-        Leave updatedLeave = modelMapper.map(leaveDto, Leave.class);
-        Leave savedLeave = leaveRepository.save(updatedLeave);
-        return modelMapper.map(savedLeave, LeaveDto.class);
-    }
-
-    @Override
-    @Transactional
-    public LeaveDto patchLeave(int id,@NotNull Map<String, Object> updates) {
-        Leave leave = leaveRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Leave not found with id: " + id));
-
-        if (updates.containsKey("status")) {
-            leave.setStatus((String) updates.get("status"));
-        }
-
-        if (updates.containsKey("approvedDate")) {
-            leave.setApprovedDate(LocalDateTime.parse((String) updates.get("approvedDate")));
-        }
-
-        Leave updatedLeave = leaveRepository.save(leave);
-        return modelMapper.map(updatedLeave, LeaveDto.class);
-    }
-
-    @Override
-    @Transactional
-    public void deleteLeave(int id) {
-        if (!leaveRepository.existsById(id)) {
-            throw new RuntimeException("Leave not found with id: " + id);
-        }
-        leaveRepository.deleteById(id);
-    }
 }
+
+//    @Autowired
+//    private LeaveRepository leaveRepository;
+//
+//    @Autowired
+//    private ModelMapper modelMapper;
+//
+//    @Override
+//    public List<LeaveDto> getAllLeaves() {
+//        return leaveRepository.findAll().stream()
+//                .map(leave -> modelMapper.map(leave, LeaveDto.class))
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public LeaveDto getLeaveById(int id) {
+//        Leave leave = leaveRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Leave not found with id: " + id));
+//        return modelMapper.map(leave, LeaveDto.class);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public LeaveDto createLeave(@Valid @NotNull LeaveDto leaveDto) {
+//        Leave leave = modelMapper.map(leaveDto, Leave.class);
+//        Leave savedLeave = leaveRepository.save(leave);
+//        return modelMapper.map(savedLeave, LeaveDto.class);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public LeaveDto updateLeave(int id, @Valid @NotNull LeaveDto leaveDto) {
+//        Leave existingLeave = leaveRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Leave not found with id: " + id));
+//
+//        leaveDto.setLeaveId(id);
+//        Leave updatedLeave = modelMapper.map(leaveDto, Leave.class);
+//        Leave savedLeave = leaveRepository.save(updatedLeave);
+//        return modelMapper.map(savedLeave, LeaveDto.class);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public LeaveDto patchLeave(int id,@NotNull Map<String, Object> updates) {
+//        Leave leave = leaveRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Leave not found with id: " + id));
+//
+//        if (updates.containsKey("status")) {
+//            leave.setStatus((String) updates.get("status"));
+//        }
+//
+//        if (updates.containsKey("approvedDate")) {
+//            leave.setApprovedDate(LocalDateTime.parse((String) updates.get("approvedDate")));
+//        }
+//
+//        Leave updatedLeave = leaveRepository.save(leave);
+//        return modelMapper.map(updatedLeave, LeaveDto.class);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void deleteLeave(int id) {
+//        if (!leaveRepository.existsById(id)) {
+//            throw new RuntimeException("Leave not found with id: " + id);
+//        }
+//        leaveRepository.deleteById(id);
+//    }
+//}

@@ -58,32 +58,29 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
         LeaveBalance updated = leaveBalanceRepository.save(existing);
         return modelMapper.map(updated, LeaveBalanceDto.class);
     }
-<<<<<<< Updated upstream
- 
- 
-=======
 
-    @Override
-    @Transactional
-    public LeaveBalanceDto patchLeaveBalance(int id,@NotNull LeaveBalanceDto leaveBalanceDto) {
-        LeaveBalance existing = leaveBalanceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("LeaveBalance not found"));
 
-        if (leaveBalanceDto.getEmployee() != null) {
-            existing.setEmployee(leaveBalanceDto.getEmployee());
-        }
-        if (leaveBalanceDto.getLeaveType() != null) {
-            existing.setLeaveType(leaveBalanceDto.getLeaveType());
-        }
-        if (leaveBalanceDto.getBalance() != 0) {
-            existing.setBalance(leaveBalanceDto.getBalance());
-        }
+//    @Override
+//    @Transactional
+//    public LeaveBalanceDto patchLeaveBalance(int id,@NotNull LeaveBalanceDto leaveBalanceDto) {
+//        LeaveBalance existing = leaveBalanceRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("LeaveBalance not found"));
+//
+//        if (leaveBalanceDto.getEmployee() != null) {
+//            existing.setEmployee(leaveBalanceDto.getEmployee());
+//        }
+//        if (leaveBalanceDto.getLeaveType() != null) {
+//            existing.setLeaveType(leaveBalanceDto.getLeaveType());
+//        }
+//        if (leaveBalanceDto.getBalance() != 0) {
+//            existing.setBalance(leaveBalanceDto.getBalance());
+//        }
+//
+//        LeaveBalance patched = leaveBalanceRepository.save(existing);
+//        return modelMapper.map(patched, LeaveBalanceDto.class);
+//    }
 
-        LeaveBalance patched = leaveBalanceRepository.save(existing);
-        return modelMapper.map(patched, LeaveBalanceDto.class);
-    }
 
->>>>>>> Stashed changes
     @Override
     @Transactional
     public void deleteLeaveBalance(int id) {

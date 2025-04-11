@@ -46,15 +46,6 @@ public class EmployeeController {
 	    return ResponseEntity.ok(updated);
 	}
 	
-	@PatchMapping("/{id}")
-	public ResponseEntity<EmployeeDto> patchEmployee(
-	        @PathVariable int id,
-	        @RequestBody Map<String, Object> updates) {
-	    EmployeeDto patched = employeeService.patchEmployee(id, updates);
-	    return ResponseEntity.ok(patched);
-	
-	
-	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteEmployee(@PathVariable int id) {
