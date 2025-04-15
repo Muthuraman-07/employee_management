@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import com.cognizant.employee_management.dto.ShiftDto;
 import com.cognizant.employee_management.service.ShiftService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/shifts")
 public class ShiftController {
@@ -19,7 +21,7 @@ public class ShiftController {
     private ShiftService shiftService;
 
     @PostMapping
-    public ResponseEntity<ShiftDto> createShift(@RequestBody ShiftDto shiftDto) {
+    public ResponseEntity<ShiftDto> createShift(@Valid @RequestBody ShiftDto shiftDto) {
         ShiftDto createdShift = shiftService.createShift(shiftDto);
         return new ResponseEntity<>(createdShift, HttpStatus.CREATED);
     }
@@ -37,13 +39,13 @@ public class ShiftController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ShiftDto> updateShift(@PathVariable int id, @RequestBody ShiftDto shiftDto) {
+    public ResponseEntity<ShiftDto> updateShift(@PathVariable int id,@Valid @RequestBody ShiftDto shiftDto) {
         ShiftDto updatedShift = shiftService.updateShift(id, shiftDto);
         return new ResponseEntity<>(updatedShift, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ShiftDto> patchShift(@PathVariable int id, @RequestBody ShiftDto shiftDto) {
+    public ResponseEntity<ShiftDto> patchShift(@PathVariable int id,@Valid @RequestBody ShiftDto shiftDto) {
         ShiftDto patchedShift = shiftService.patchShift(id, shiftDto);
         return new ResponseEntity<>(patchedShift, HttpStatus.OK);
     }

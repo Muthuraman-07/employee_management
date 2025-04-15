@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cognizant.employee_management.dto.LeaveDto;
 import com.cognizant.employee_management.service.LeaveService;
 
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/api/leaves")
+@RequestMapping("/api/employee")
 public class LeaveController {
 	@Autowired
     private LeaveService leaveService;
@@ -35,17 +37,17 @@ public class LeaveController {
     }
  
     @PostMapping
-    public LeaveDto createLeave(@RequestBody LeaveDto dto) {
+    public LeaveDto createLeave(@Valid @RequestBody LeaveDto dto) {
         return leaveService.createLeave(dto);
     }
  
     @PutMapping("/{id}")
-    public LeaveDto updateLeave(@PathVariable int id, @RequestBody LeaveDto dto) {
+    public LeaveDto updateLeave(@PathVariable int id,@Valid @RequestBody LeaveDto dto) {
         return leaveService.updateLeave(id, dto);
     }
  
     @PatchMapping("/{id}")
-    public LeaveDto patchLeave(@PathVariable int id, @RequestBody Map<String, Object> updates) {
+    public LeaveDto patchLeave(@PathVariable int id,@Valid @RequestBody Map<String, Object> updates) {
         return leaveService.patchLeave(id, updates);
     }
  

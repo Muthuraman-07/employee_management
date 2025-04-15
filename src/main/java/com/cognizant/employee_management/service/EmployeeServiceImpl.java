@@ -1,13 +1,18 @@
 package com.cognizant.employee_management.service;
-import org.modelmapper.ModelMapper;
-
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.ReflectionUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.cognizant.employee_management.dto.EmployeeDto;
@@ -15,7 +20,7 @@ import com.cognizant.employee_management.model.Employee;
 import com.cognizant.employee_management.repository.EmployeeRepository;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService
+public class EmployeeServiceImpl implements EmployeeService, UserDetailsService
 {
 	@Autowired
     private EmployeeRepository employeeRepository;
@@ -85,6 +90,24 @@ public class EmployeeServiceImpl implements EmployeeService
 	    }
 	    employeeRepository.deleteById(id);
 	}
+	
+	
+
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		// TODO Auto-generated method stub
+		Employee employee = employeeRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+		return new org.springframework.security.core.userdetails.User
+        		(employee.getUsername(), employee.getPassword(),
+    	                Collections.singletonList(new SimpleGrantedAuthority(employee.getRole())));
+	}
+
+	
+
+	
 	
 	
 }

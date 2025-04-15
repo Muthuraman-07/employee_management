@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,13 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cognizant.employee_management.dto.EmployeeDto;
 import com.cognizant.employee_management.service.EmployeeService;
 
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/api")
 public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
+	
+	
 
-	@GetMapping("/getall")
+	@GetMapping("/emp/getall")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
 		List<EmployeeDto> employees = employeeService.getAllEmployees();
 //		System.out.println("Employees: " + employees);
@@ -33,20 +39,20 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/createEmployee")
-	public ResponseEntity<EmployeeDto> createEmployees(@RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<EmployeeDto> createEmployees(@Valid @RequestBody EmployeeDto employeeDto) {
 		EmployeeDto saved=employeeService.createEmployee(employeeDto);
 		return new ResponseEntity<>(saved, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable int id, @RequestBody EmployeeDto employeeDto) {
+	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable int id,@Valid @RequestBody EmployeeDto employeeDto) {
 	    EmployeeDto updated = employeeService.updateEmployee(id, employeeDto);
 	    return ResponseEntity.ok(updated);
 	}
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<EmployeeDto> patchEmployee(
-	        @PathVariable int id,
+	        @PathVariable int id, @Valid
 	        @RequestBody Map<String, Object> updates) {
 	    EmployeeDto patched = employeeService.patchEmployee(id, updates);
 	    return ResponseEntity.ok(patched);
@@ -54,7 +60,8 @@ public class EmployeeController {
 	
 	}
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/manager/{id}")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<String> deleteEmployee(@PathVariable int id) {
 	    employeeService.deleteEmployee(id);
 	    return ResponseEntity.ok("Employee deleted successfully.");
