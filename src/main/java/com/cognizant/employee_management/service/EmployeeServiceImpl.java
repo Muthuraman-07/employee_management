@@ -47,6 +47,13 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
         Employee employee = modelMapper.map(employeeDto, Employee.class);
         Employee saved = employeeRepository.save(employee);
 
+        List<LeaveBalance> leaveBalances = List.of(
+            new LeaveBalance(saved, "Vacation", 10),
+            new LeaveBalance(saved, "Sick Leave", 5),
+            new LeaveBalance(saved, "Casual Leave", 7)
+        );
+
+        leaveBalances.forEach(leaveBalanceRepository::save);
         return modelMapper.map(saved, EmployeeDto.class);
     }
 
