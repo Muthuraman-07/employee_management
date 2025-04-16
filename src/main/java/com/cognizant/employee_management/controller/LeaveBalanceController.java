@@ -46,10 +46,7 @@ public class LeaveBalanceController {
         return leaveBalanceService.updateLeaveBalance(id, dto);
     }
  
-    @PatchMapping("/{id}")
-    public LeaveBalanceDto patch(@PathVariable int id,@Valid @RequestBody LeaveBalanceDto dto) {
-        return leaveBalanceService.patchLeaveBalance(id, dto);
-    }
+    
  
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {

@@ -6,12 +6,12 @@ import java.util.Map;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.cognizant.employee_management.dto.EmployeeDto;
+import com.cognizant.employee_management.dto.returnEmployeeDto;
 
 public interface EmployeeService {
-	List<EmployeeDto> getAllEmployees();
+	List<returnEmployeeDto> getAllEmployees();
 	EmployeeDto createEmployee(EmployeeDto employeeDto);
 	EmployeeDto updateEmployee(int id, EmployeeDto employeeDto);
-	EmployeeDto patchEmployee(int id,Map<String, Object> updates);
 	void deleteEmployee(int id);
 	UserDetails loadUserByUsername(String username);
 }

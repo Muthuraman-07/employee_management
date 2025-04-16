@@ -17,7 +17,7 @@ import lombok.Data;
 @Table(name="employee_leave")
 public class Leave {
 	@Id
-//	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int leaveId;
 	@ManyToOne
 	@JoinColumn(name="employeeId")

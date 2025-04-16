@@ -16,45 +16,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.employee_management.dto.LeaveDto;
+import com.cognizant.employee_management.dto.returnLeaveDto;
+import com.cognizant.employee_management.model.Leave;
 import com.cognizant.employee_management.service.LeaveService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/employee")
+@RequestMapping("/api/leave")
 public class LeaveController {
 	@Autowired
     private LeaveService leaveService;
  
-    @GetMapping("/all")
+    @GetMapping("/allLeaves")
     public List<LeaveDto> getAllLeaves() {
         return leaveService.getAllLeaves();
     }
  
+    @GetMapping("/leaveRequestStatus/{status}")
+    public List<returnLeaveDto> getAllPendingLeaveRequests(@PathVariable String status) {
+        return leaveService.getAllPendingLeaveRequests(status);
+    }
+    
     @GetMapping("/{id}")
     public LeaveDto getLeaveById(@PathVariable int id) {
         return leaveService.getLeaveById(id);
     }
  
-    @PostMapping
+    @PostMapping("/createLeave")
     public LeaveDto createLeave(@Valid @RequestBody LeaveDto dto) {
         return leaveService.createLeave(dto);
     }
  
-    @PutMapping("/{id}")
+    @PutMapping("update/{id}")
     public LeaveDto updateLeave(@PathVariable int id,@Valid @RequestBody LeaveDto dto) {
         return leaveService.updateLeave(id, dto);
     }
  
-    @PatchMapping("/{id}")
-    public LeaveDto patchLeave(@PathVariable int id,@Valid @RequestBody Map<String, Object> updates) {
-        return leaveService.patchLeave(id, updates);
-    }
- 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("deleteLeave/{id}")
     public ResponseEntity<?> deleteLeave(@PathVariable int id) {
         leaveService.deleteLeave(id);
         return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("applyLeave/{id}")
+    public ResponseEntity<String> applyLeave(@PathVariable int id,@RequestBody LeaveDto leaveDto) {
+    	leaveService.applyLeave(id,leaveDto);
+        return ResponseEntity.ok("Created");
     }
 
 }

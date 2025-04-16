@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.employee_management.dto.EmployeeDto;
+import com.cognizant.employee_management.dto.returnEmployeeDto;
 import com.cognizant.employee_management.service.EmployeeService;
 
 import jakarta.validation.Valid;
@@ -32,8 +33,8 @@ public class EmployeeController {
 
 	@GetMapping("/emp/getall")
 	@PreAuthorize("hasRole('MANAGER')")
-	public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
-		List<EmployeeDto> employees = employeeService.getAllEmployees();
+	public ResponseEntity<List<returnEmployeeDto>> getAllEmployees() {
+		List<returnEmployeeDto> employees = employeeService.getAllEmployees();
 //		System.out.println("Employees: " + employees);
 		return ResponseEntity.ok(employees);
 	}
@@ -50,17 +51,7 @@ public class EmployeeController {
 	    return ResponseEntity.ok(updated);
 	}
 	
-	@PatchMapping("/{id}")
-	public ResponseEntity<EmployeeDto> patchEmployee(
-	        @PathVariable int id, @Valid
-	        @RequestBody Map<String, Object> updates) {
-	    EmployeeDto patched = employeeService.patchEmployee(id, updates);
-	    return ResponseEntity.ok(patched);
-	
-	
-	}
-	
-	@DeleteMapping("/manager/{id}")
+	@DeleteMapping("/deleteEmployee/{id}")
 	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<String> deleteEmployee(@PathVariable int id) {
 	    employeeService.deleteEmployee(id);

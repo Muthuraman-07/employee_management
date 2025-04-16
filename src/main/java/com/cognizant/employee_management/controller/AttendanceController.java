@@ -47,13 +47,6 @@ public class AttendanceController {
 		return ResponseEntity.ok(attendanceService.updateAttendance(id, attendanceDto));
 	}
 
-//    @PatchMapping("/{id}/clockout")
-//
-//    public ResponseEntity<AttendanceDto> patchClockOut(
-//            @PathVariable int id,
-//            @RequestBody LocalDateTime clockOutTime) {
-//        return ResponseEntity.ok(attendanceService.patchClockOutTime(id, clockOutTime));
-//    }
 
 	@PatchMapping("/patchAttendance/{id}")
 	public ResponseEntity<AttendanceDto> patchAttendance(@PathVariable int id,
