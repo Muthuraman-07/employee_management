@@ -20,6 +20,8 @@ import com.cognizant.employee_management.repository.EmployeeRepository;
 import com.cognizant.employee_management.repository.LeaveBalanceRepository;
 import com.cognizant.employee_management.repository.LeaveRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class LeaveServiceImpl implements LeaveService{
 	@Autowired
@@ -77,49 +79,116 @@ public class LeaveServiceImpl implements LeaveService{
                 .orElseThrow(() -> new RuntimeException("Leave not found with id: " + id));
         leaveRepository.delete(leave);
     }
+//    @Override
+//	public void applyLeave(int id, LeaveDto leaveDto) {
+//		// Check if the employee exists
+//		Optional<Employee> container = employeeRepository.findById(id);
+//		if (!container.isPresent()) {
+//			throw new RuntimeException("Employee Not Found!!!");
+//		}
+//		Employee employee = container.get();
+//		Leave leave = modelMapper.map(leaveDto, Leave.class);
+//		leave.setEmployee(employee);
+//		leave.setStatus("Pending");
+//		leave.setAppliedDate(LocalDateTime.now());
+//		Leave savedLeave = leaveRepository.save(leave);
+//
+//		if ("Approved".equals(savedLeave.getStatus())) {
+//			if (isLeaveAvailable(employee, savedLeave)) {
+//				leave.setApprovedDate(LocalDateTime.now());
+//				leaveRepository.save(leave);
+//				updateLeaveBalance(employee, savedLeave);
+//			} else {
+//				throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
+//			}
+//		}
+//		if ("Rejected".equals(savedLeave.getStatus())) {
+//			leave.setApprovedDate(LocalDateTime.now());
+//			leaveRepository.save(leave);
+//		}
+//	}
+//    @Override
+//    @Transactional
+//    public void applyLeave(int id, LeaveDto leaveDto) {
+//        // Check if the employee exists
+//        Employee employee = employeeRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Employee Not Found!!!"));
+//
+//        Leave leave = modelMapper.map(leaveDto, Leave.class);
+//        leave.setEmployee(employee);
+//        leave.setStatus("Pending");
+//        leave.setAppliedDate(LocalDateTime.now());
+//        Leave savedLeave = leaveRepository.save(leave);
+//
+//        if ("Approved".equals(savedLeave.getStatus())) {
+//            if (isLeaveAvailable(employee, savedLeave)) {
+//                leave.setApprovedDate(LocalDateTime.now());
+//                leaveRepository.save(leave);
+//                updateLeaveBalance(employee, savedLeave);
+//            } else {
+//                throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
+//            }
+//        } else if ("Rejected".equals(savedLeave.getStatus())) {
+//            leave.setApprovedDate(LocalDateTime.now());
+//            leaveRepository.save(leave);
+//        }
+//    }
+
+
+//	private boolean isLeaveAvailable(Employee employee, Leave leave) {
+//		// Find the leave balance for the employee and leave type
+//		LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeAndLeaveType(employee, leave.getLeaveType());
+//		int leaveDays = (int) java.time.temporal.ChronoUnit.DAYS.between(leave.getStartDate(), leave.getEndDate()) + 1;
+//		return leaveBalance.getBalance() >= leaveDays;
+//	}
+//
+//	private void updateLeaveBalance(Employee employee, Leave leave) {
+//		LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeAndLeaveType(employee, leave.getLeaveType());
+//		int leaveDays = (int) java.time.temporal.ChronoUnit.DAYS.between(leave.getStartDate(), leave.getEndDate()) + 1;
+//		leaveBalance.setBalance(leaveBalance.getBalance() - leaveDays);
+//		leaveBalanceRepository.save(leaveBalance);
+//	}
     @Override
-	public void applyLeave(int id, LeaveDto leaveDto) {
-		// Check if the employee exists
-		Optional<Employee> container = employeeRepository.findById(id);
-		if (!container.isPresent()) {
-			throw new RuntimeException("Employee Not Found!!!");
-		}
-		Employee employee = container.get();
-		Leave leave = modelMapper.map(leaveDto, Leave.class);
-		leave.setEmployee(employee);
-		leave.setStatus("Pending");
-		leave.setAppliedDate(LocalDateTime.now());
-		Leave savedLeave = leaveRepository.save(leave);
+    @Transactional
+    public void applyLeave(int id, LeaveDto leaveDto) {
+        // Check if the employee exists
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee Not Found!!!"));
 
-		if ("Approved".equals(savedLeave.getStatus())) {
-			if (isLeaveAvailable(employee, savedLeave)) {
-				leave.setApprovedDate(LocalDateTime.now());
-				leaveRepository.save(leave);
-				updateLeaveBalance(employee, savedLeave);
-			} else {
-				throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
-			}
-		}
-		if ("Rejected".equals(savedLeave.getStatus())) {
-			leave.setApprovedDate(LocalDateTime.now());
-			leaveRepository.save(leave);
-		}
-	}
+        Leave leave = modelMapper.map(leaveDto, Leave.class);
+        leave.setEmployee(employee);
+        leave.setStatus("Pending");
+        leave.setAppliedDate(LocalDateTime.now());
+        Leave savedLeave = leaveRepository.save(leave);
 
-	private boolean isLeaveAvailable(Employee employee, Leave leave) {
-		// Find the leave balance for the employee and leave type
-		LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeAndLeaveType(employee, leave.getLeaveType());
-		int leaveDays = (int) java.time.temporal.ChronoUnit.DAYS.between(leave.getStartDate(), leave.getEndDate()) + 1;
-		return leaveBalance.getBalance() >= leaveDays;
-	}
+        // Check if the leave is approved
+        if ("Approved".equals(savedLeave.getStatus())) {
+            // Check if the leave is available
+            if (isLeaveAvailable(employee, savedLeave)) {
+                leave.setApprovedDate(LocalDateTime.now());
+                leave.setStatus("Approved");
+                leaveRepository.save(leave);
+                updateLeaveBalance(employee, savedLeave);
+            } else {
+                throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
+            }
+        } else if ("Rejected".equals(savedLeave.getStatus())) {
+            leave.setApprovedDate(LocalDateTime.now());
+            leave.setStatus("Rejected");
+            leaveRepository.save(leave);
+        }
+    }
 
-	private void updateLeaveBalance(Employee employee, Leave leave) {
-		LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeAndLeaveType(employee, leave.getLeaveType());
-		int leaveDays = (int) java.time.temporal.ChronoUnit.DAYS.between(leave.getStartDate(), leave.getEndDate()) + 1;
-		leaveBalance.setBalance(leaveBalance.getBalance() - leaveDays);
-		leaveBalanceRepository.save(leaveBalance);
-	}
+    private boolean isLeaveAvailable(Employee employee, Leave leave) {
+        LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeAndLeaveType(employee, leave.getLeaveType());
+        int leaveDays = (int) java.time.temporal.ChronoUnit.DAYS.between(leave.getStartDate(), leave.getEndDate()) + 1;
+        return leaveBalance.getBalance() >= leaveDays;
+    }
 
-	
-    
+    private void updateLeaveBalance(Employee employee, Leave leave) {
+        LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeAndLeaveType(employee, leave.getLeaveType());
+        int leaveDays = (int) java.time.temporal.ChronoUnit.DAYS.between(leave.getStartDate(), leave.getEndDate()) + 1;
+        leaveBalance.setBalance(leaveBalance.getBalance() - leaveDays);
+        leaveBalanceRepository.save(leaveBalance);
+    }
 }

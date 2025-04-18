@@ -55,9 +55,18 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService{
     }
  
  
-    @Override
+//    @Override
+//    public void deleteLeaveBalance(int id) {
+//        leaveBalanceRepository.deleteById(id);
+//    }@Override
     public void deleteLeaveBalance(int id) {
+        if (!leaveBalanceRepository.existsById(id)) {
+            throw new RuntimeException("LeaveBalance not found with id: " + id);
+        }
+        System.out.println("LeaveBalance exists, proceeding to delete."); // Debug statement
         leaveBalanceRepository.deleteById(id);
     }
+
+    
 
 }

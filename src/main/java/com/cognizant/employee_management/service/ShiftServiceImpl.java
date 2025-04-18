@@ -57,9 +57,18 @@ public class ShiftServiceImpl implements ShiftService {
         Shift patched = shiftRepository.save(existing);
         return modelMapper.map(patched, ShiftDto.class);
     }
+//    @Override
+//    public void deleteShift(int id) {
+//        shiftRepository.deleteById(id);
+//    }
     @Override
     public void deleteShift(int id) {
+        if (!shiftRepository.existsById(id)) {
+            throw new RuntimeException("Shift not found with id: " + id);
+        }
+        System.out.println("Shift exists, proceeding to delete."); // Debug statement
         shiftRepository.deleteById(id);
     }
+
 }
  

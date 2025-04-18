@@ -1,14 +1,11 @@
 package com.cognizant.employee_management.service;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,27 +32,46 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     private ModelMapper modelMapper;
 
     @Override
+//    public List<returnEmployeeDto> getAllEmployees() {
+//        List<Employee> employees = employeeRepository.findAll();
+//        return employees.stream()
+//                .map(employee -> modelMapper.map(employee, returnEmployeeDto.class))
+//                .collect(Collectors.toList());
+//    }
     public List<returnEmployeeDto> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
+        System.out.println("Employees: " + employees); // Debug statement
         return employees.stream()
-                .map(employee -> modelMapper.map(employee, returnEmployeeDto.class))
+                .map(employee -> {
+                    returnEmployeeDto dto = modelMapper.map(employee, returnEmployeeDto.class);
+                    System.out.println("Mapped DTO: " + dto); // Debug statement
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
+
+//    @Override
+//    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
+//        Employee employee = modelMapper.map(employeeDto, Employee.class);
+//        Employee saved = employeeRepository.save(employee);
+//
+//        List<LeaveBalance> leaveBalances = List.of(
+//            new LeaveBalance(saved, "Vacation", 10),
+//            new LeaveBalance(saved, "Sick Leave", 5),
+//            new LeaveBalance(saved, "Casual Leave", 7)
+//        );
+//
+//        leaveBalances.forEach(leaveBalanceRepository::save);
+//        return modelMapper.map(saved, EmployeeDto.class);
+//    }
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = modelMapper.map(employeeDto, Employee.class);
         Employee saved = employeeRepository.save(employee);
-
-        List<LeaveBalance> leaveBalances = List.of(
-            new LeaveBalance(saved, "Vacation", 10),
-            new LeaveBalance(saved, "Sick Leave", 5),
-            new LeaveBalance(saved, "Casual Leave", 7)
-        );
-
-        leaveBalances.forEach(leaveBalanceRepository::save);
         return modelMapper.map(saved, EmployeeDto.class);
     }
+
 
 
     @Override

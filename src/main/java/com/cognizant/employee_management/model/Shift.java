@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 @Entity
 public class Shift {
+	public static Shift MORNING;
 	@Id
     private int shiftId;
     private LocalDate shiftDate;

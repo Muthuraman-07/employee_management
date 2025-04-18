@@ -22,4 +22,6 @@ public class LeaveDto {
     @NotNull(message = "Leave Type cannot be null")
     @Size(min = 2, max = 30, message = "Leave Type must be between 2 and 30 characters")
     private String leaveType;
+    
+    private String status;
 }
