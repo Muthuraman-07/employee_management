@@ -1,12 +1,15 @@
 package com.cognizant.employee_management.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +21,16 @@ import lombok.Data;
 @Data
 @Entity
 public class Employee {
+	
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE) // Automatically delete related records
+    private List<LeaveBalance> leaveBalances;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
+    private List<Leave> leaves;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
+    private List<Attendance> attendances;
+	
 	@Id
 	@NotNull(message = "Employee ID cannot be null")
     @Min(value = 1, message = "Employee ID must be greater than zero")
@@ -71,7 +84,7 @@ public class Employee {
 	
 	@ManyToOne
 	@JoinColumn(name="shiftId")
-	@NotNull(message = "Shift cannot be null")
+//	@NotNull(message = "Shift cannot be null")
     private Shift shift;
 	
 	@NotNull(message = "Joined Date cannot be null")

@@ -10,4 +10,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance,Integer>{
 	
 //	List<Attendance> findAll();
 //	Optional<Attendance> findById(int id);
+//	void deleteByEmployeeId(int employeeId);
+	void deleteByEmployee_EmployeeId(int employeeId);
+
 }

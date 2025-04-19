@@ -1,6 +1,7 @@
 package com.cognizant.employee_management.model;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +20,7 @@ public class Leave {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int leaveId;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="employeeId")
     private Employee employee;
 	@Temporal(TemporalType.TIMESTAMP)

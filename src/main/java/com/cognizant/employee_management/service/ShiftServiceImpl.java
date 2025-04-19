@@ -1,16 +1,23 @@
 package com.cognizant.employee_management.service;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.cognizant.employee_management.dto.ShiftDto;
 import com.cognizant.employee_management.model.Shift;
+import com.cognizant.employee_management.repository.EmployeeRepository;
 import com.cognizant.employee_management.repository.ShiftRepository;
 @Service
 public class ShiftServiceImpl implements ShiftService {
     @Autowired
     private ShiftRepository shiftRepository;
+    
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    
     @Autowired
     private ModelMapper modelMapper;
     @Override
@@ -69,6 +76,8 @@ public class ShiftServiceImpl implements ShiftService {
         System.out.println("Shift exists, proceeding to delete."); // Debug statement
         shiftRepository.deleteById(id);
     }
+    
+    
 
 }
  

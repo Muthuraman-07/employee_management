@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.employee_management.dto.LeaveDto;
+import com.cognizant.employee_management.dto.returnEmployeeDto;
 import com.cognizant.employee_management.dto.returnLeaveDto;
 import com.cognizant.employee_management.model.Leave;
 import com.cognizant.employee_management.service.LeaveService;
@@ -28,10 +30,18 @@ public class LeaveController {
 	@Autowired
     private LeaveService leaveService;
  
-    @GetMapping("/allLeaves")
-    public List<LeaveDto> getAllLeaves() {
-        return leaveService.getAllLeaves();
-    }
+//    @GetMapping("/allLeaves")
+//    public List<LeaveDto> getAllLeaves() {
+//        return leaveService.getAllLeaves();
+//    }
+	
+	@GetMapping("/all")
+//	@PreAuthorize("hasRole('MANAGER')")
+	public ResponseEntity<List<LeaveDto>> getAllLeaves() {
+		List<LeaveDto> leaves = leaveService.getAllLeaves();
+//		System.out.println("Employees: " + employees);
+		return ResponseEntity.ok(leaves);
+	}
  
     @GetMapping("/leaveRequestStatus/{status}")
     public List<returnLeaveDto> getAllPendingLeaveRequests(@PathVariable String status) {
@@ -62,7 +72,7 @@ public class LeaveController {
     @PostMapping("applyLeave/{id}")
     public ResponseEntity<String> applyLeave(@PathVariable int id,@RequestBody LeaveDto leaveDto) {
     	leaveService.applyLeave(id,leaveDto);
-        return ResponseEntity.ok("Created");
+        return ResponseEntity.ok("Leave Applied");
     }
 
 }

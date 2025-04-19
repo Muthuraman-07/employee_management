@@ -29,31 +29,41 @@ public class AttendanceController {
 	private AttendanceService attendanceService;
 
 	@GetMapping("/all")
-	public ResponseEntity<List<Attendance>> getAllAttendance() {
-		List<Attendance> attendanceList = attendanceService.getAllAttendance();
+	public ResponseEntity<List<AttendanceDto>> getAllAttendance() {
+		List<AttendanceDto> attendanceList = attendanceService.getAllAttendance();
 		return ResponseEntity.ok(attendanceList);
 	}
 
-	@PostMapping("/saveAttendance")
-	public ResponseEntity<AttendanceDto> createAttedance(@Valid @RequestBody AttendanceDto attendanceDto) {
-		AttendanceDto saved = attendanceService.createAttendance(attendanceDto);
-		return new ResponseEntity<>(saved, HttpStatus.OK);
+//	@PostMapping("/saveAttendance")
+//	public ResponseEntity<AttendanceDto> createAttedance(@Valid @RequestBody AttendanceDto attendanceDto) {
+//		AttendanceDto saved = attendanceService.createAttendance(attendanceDto);
+//		return new ResponseEntity<>(saved, HttpStatus.OK);
+//
+//	}
+	
+	@PostMapping("/apply")
+    public String updateAttendance(@RequestBody AttendanceDto attendanceDto) {
+        try {
+            attendanceService.calculateAndUpdateAttendance(attendanceDto);
+            return "Attendance updated successfully.";
+        } catch (Exception e) {
+            return "Error updating attendance: " + e.getMessage();
+        }
+    }
 
-	}
-
-	@PutMapping("/{id}")
+	@PatchMapping("/{id}")
 	public ResponseEntity<AttendanceDto> updateAttendance(@PathVariable int id,
 			@Valid @RequestBody AttendanceDto attendanceDto) {
 		return ResponseEntity.ok(attendanceService.updateAttendance(id, attendanceDto));
 	}
 
 
-	@PatchMapping("/patchAttendance/{id}")
-	public ResponseEntity<AttendanceDto> patchAttendance(@PathVariable int id,
-			@Valid @RequestBody AttendanceDto attendanceDto) {
-		AttendanceDto updated = attendanceService.patchAttendance(id, attendanceDto);
-		return ResponseEntity.ok(updated);
-	}
+//	@PatchMapping("/patchAttendance/{id}")
+//	public ResponseEntity<AttendanceDto> patchAttendance(@PathVariable int id,
+//			@Valid @RequestBody AttendanceDto attendanceDto) {
+//		AttendanceDto updated = attendanceService.patchAttendance(id, attendanceDto);
+//		return ResponseEntity.ok(updated);
+//	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteAttendance(@PathVariable int id) {

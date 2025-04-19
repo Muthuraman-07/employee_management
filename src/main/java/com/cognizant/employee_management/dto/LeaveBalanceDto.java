@@ -1,7 +1,8 @@
 package com.cognizant.employee_management.dto;
  
 import com.cognizant.employee_management.model.Employee;
- 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.*;
 import lombok.Data;
  
@@ -12,6 +13,7 @@ public class LeaveBalanceDto {
     private int leaveBalanceID;
  
     @NotNull(message = "Employee cannot be null")
+    @JsonIgnore
     private Employee employee;
  
     @NotNull(message = "Leave Type cannot be null")

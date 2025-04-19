@@ -12,4 +12,6 @@ public interface ShiftService {
     ShiftDto updateShift(int id, ShiftDto shiftDto);
     ShiftDto patchShift(int id, ShiftDto shiftDto);
     void deleteShift(int id);
+    
+    
 }

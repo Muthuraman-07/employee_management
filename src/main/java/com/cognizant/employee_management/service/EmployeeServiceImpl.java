@@ -16,8 +16,14 @@ import com.cognizant.employee_management.dto.EmployeeDto;
 import com.cognizant.employee_management.dto.returnEmployeeDto;
 import com.cognizant.employee_management.model.Employee;
 import com.cognizant.employee_management.model.LeaveBalance;
+import com.cognizant.employee_management.model.Shift;
+import com.cognizant.employee_management.repository.AttendanceRepository;
 import com.cognizant.employee_management.repository.EmployeeRepository;
 import com.cognizant.employee_management.repository.LeaveBalanceRepository;
+import com.cognizant.employee_management.repository.LeaveRepository;
+import com.cognizant.employee_management.repository.ShiftRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService, UserDetailsService {
@@ -27,9 +33,18 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
     @Autowired
     private LeaveBalanceRepository leaveBalanceRepository;
+    
+    @Autowired
+    private LeaveRepository leaveRepository;
+    
+    @Autowired
+    private AttendanceRepository attendanceRepository;
 
     @Autowired
     private ModelMapper modelMapper;
+    
+    @Autowired
+    private ShiftRepository shiftRepository;
 
     @Override
 //    public List<returnEmployeeDto> getAllEmployees() {
@@ -51,26 +66,26 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     }
 
 
-//    @Override
-//    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-//        Employee employee = modelMapper.map(employeeDto, Employee.class);
-//        Employee saved = employeeRepository.save(employee);
-//
-//        List<LeaveBalance> leaveBalances = List.of(
-//            new LeaveBalance(saved, "Vacation", 10),
-//            new LeaveBalance(saved, "Sick Leave", 5),
-//            new LeaveBalance(saved, "Casual Leave", 7)
-//        );
-//
-//        leaveBalances.forEach(leaveBalanceRepository::save);
-//        return modelMapper.map(saved, EmployeeDto.class);
-//    }
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = modelMapper.map(employeeDto, Employee.class);
         Employee saved = employeeRepository.save(employee);
+
+        List<LeaveBalance> leaveBalances = List.of(
+            new LeaveBalance(saved, "Vacation", 10),
+            new LeaveBalance(saved, "Sick Leave", 5),
+            new LeaveBalance(saved, "Casual Leave", 7)
+        );
+
+        leaveBalances.forEach(leaveBalanceRepository::save);
         return modelMapper.map(saved, EmployeeDto.class);
     }
+//    @Override
+//    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
+//        Employee employee = modelMapper.map(employeeDto, Employee.class);
+//        Employee saved = employeeRepository.save(employee);
+//        return modelMapper.map(saved, EmployeeDto.class);
+//    }
 
 
 
@@ -78,7 +93,8 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     public EmployeeDto updateEmployee(int id, EmployeeDto employeeDto) {
         Employee existing = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
-
+        Shift shift = shiftRepository.findById(employeeDto.getShiftId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Shift ID"));
         existing.setUsername(employeeDto.getUsername());
         existing.setFirstName(employeeDto.getFirstName());
         existing.setLastName(employeeDto.getLastName());
@@ -89,19 +105,19 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
         existing.setJoinedDate(employeeDto.getJoinedDate());
         existing.setManagerId(employeeDto.getManagerId());
         existing.setPassword(employeeDto.getPassword());
-        existing.setShift(employeeDto.getShift());
+        existing.setShift(shift);
 
         Employee updated = employeeRepository.save(existing);
         return modelMapper.map(updated, EmployeeDto.class);
     }
     
-    @Override
-    public void deleteEmployee(int id) {
-        if (!employeeRepository.existsById(id)) {
-            throw new RuntimeException("Employee not found with id: " + id);
-        }
-        employeeRepository.deleteById(id);
-    }
+//    @Override
+//    public void deleteEmployee(int id) {
+//        if (!employeeRepository.existsById(id)) {
+//            throw new RuntimeException("Employee not found with id: " + id);
+//        }
+//        employeeRepository.deleteById(id);
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -111,6 +127,26 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
         return new org.springframework.security.core.userdetails.User(
                 employee.getUsername(), employee.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(employee.getRole())));
+    }
+    
+    @Override
+    @Transactional
+    public void deleteEmployeeById(int id) {
+        // Check if the employee exists
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found with ID: " + id));
+
+        // Delete related records from the attendance table
+        attendanceRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+
+        // Delete related records from the leave table
+        leaveRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+
+        // Delete related records from the leave_balance table
+        leaveBalanceRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+
+        // Delete the employee
+        employeeRepository.delete(employee);
     }
 
 }

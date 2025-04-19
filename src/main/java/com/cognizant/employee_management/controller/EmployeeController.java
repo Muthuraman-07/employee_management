@@ -52,10 +52,12 @@ public class EmployeeController {
 	}
 	
 	@DeleteMapping("/deleteEmployee/{id}")
-	@PreAuthorize("hasRole('MANAGER')")
-	public ResponseEntity<String> deleteEmployee(@PathVariable int id) {
-	    employeeService.deleteEmployee(id);
+//	@PreAuthorize("hasRole('MANAGER')")
+	public ResponseEntity<String> deleteEmployeeById(@PathVariable int id) {
+	    employeeService.deleteEmployeeById(id);
 	    return ResponseEntity.ok("Employee deleted successfully.");
 	}
+	
+	
 	
 }

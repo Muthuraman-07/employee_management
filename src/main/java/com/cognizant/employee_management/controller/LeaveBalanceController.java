@@ -19,7 +19,7 @@ import com.cognizant.employee_management.service.LeaveBalanceService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/leavebalance")
+@RequestMapping("/api/leavebalance")
 public class LeaveBalanceController {
 
 	@Autowired

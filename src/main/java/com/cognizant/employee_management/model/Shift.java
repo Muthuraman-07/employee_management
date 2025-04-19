@@ -16,8 +16,4 @@ public class Shift {
     private LocalDate shiftDate;
     private LocalTime shiftStartTime;
     private LocalTime shiftEndTime;
-	
-    
-    
-    
 }

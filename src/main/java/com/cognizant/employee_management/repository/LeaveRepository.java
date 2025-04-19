@@ -8,4 +8,6 @@ import com.cognizant.employee_management.model.Leave;
 
 public interface LeaveRepository extends JpaRepository<Leave, Integer>{
 	List<Leave> findByStatus(String string);
+//	void deleteByEmployeeId(int employeeId);
+	void deleteByEmployee_EmployeeId(int employeeId);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.employee_management.dto.AuthenticationRequestDto;
 import com.cognizant.employee_management.dto.AuthenticationResponseDTO;
+import com.cognizant.employee_management.dto.EmployeeDto;
 import com.cognizant.employee_management.model.Employee;
 import com.cognizant.employee_management.service.AuthenticationService;
 import com.cognizant.employee_management.service.EmployeeService;
@@ -43,8 +44,14 @@ public class AuthenticationController {
 
 	
 
-	@PostMapping("/saveEmployee")
-	public Employee register(@Valid @RequestBody Employee employee) {
+//	@PostMapping("/register")
+//	public Employee register(@Valid @RequestBody Employee employee) {
+//		return authService.save(employee);
+//	}
+	
+	@PostMapping("/register")
+//	@PreAuthorize("hasRole('MANAGER')")
+	public EmployeeDto register(@Valid @RequestBody EmployeeDto employee) {
 		return authService.save(employee);
 	}
 

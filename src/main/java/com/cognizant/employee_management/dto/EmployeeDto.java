@@ -1,10 +1,13 @@
 package com.cognizant.employee_management.dto;
  
 import java.time.LocalDate;
- 
-import com.cognizant.employee_management.model.Shift;
- 
-import jakarta.validation.constraints.*;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
  
 @Data
@@ -50,8 +53,8 @@ public class EmployeeDto {
     @Size(min = 2, max = 50, message = "Role must be between 2 and 50 characters")
     private String role;
  
-    @NotNull(message = "Shift cannot be null")
-    private Shift shift;
+//    @NotNull(message = "Shift cannot be null")
+    private int shiftId;
  
     @NotNull(message = "Joined Date cannot be null")
     @Past(message = "Joined Date must be in the past")

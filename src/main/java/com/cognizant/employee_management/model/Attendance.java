@@ -16,7 +16,7 @@ public class Attendance {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int attendanceID;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="employeeId")
     private Employee employee;
 	@Temporal(TemporalType.TIMESTAMP)

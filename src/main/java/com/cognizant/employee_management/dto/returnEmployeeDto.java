@@ -16,6 +16,6 @@ public class returnEmployeeDto {
 	    private String phoneNumber;
 	    private String department;
 	    private String role;
-	    private Shift shift;
+	    private int shiftId;
 	    private LocalDate joinedDate;
 }

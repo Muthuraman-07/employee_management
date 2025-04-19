@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cognizant.employee_management.dto.EmployeeDto;
 import com.cognizant.employee_management.dto.LeaveDto;
 import com.cognizant.employee_management.dto.returnEmployeeDto;
 import com.cognizant.employee_management.dto.returnLeaveDto;
@@ -33,12 +34,35 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     private ModelMapper modelMapper;
  
-    @Override
+//    @Override
+//    public List<LeaveDto> getAllLeaves() {
+//        return leaveRepository.findAll().stream()
+//                .map(leave -> modelMapper.map(leave, LeaveDto.class))
+//                .collect(Collectors.toList());
+//    }
+    
     public List<LeaveDto> getAllLeaves() {
-        return leaveRepository.findAll().stream()
-                .map(leave -> modelMapper.map(leave, LeaveDto.class))
-                .collect(Collectors.toList());
+        // Fetch all Leave entities from the repository
+        List<Leave> leaves = leaveRepository.findAll();
+
+        // Manually map each Leave entity to LeaveDto
+        return leaves.stream().map(leave -> {
+            LeaveDto leaveDto = new LeaveDto();
+            leaveDto.setLeaveId(leave.getLeaveId());
+            leaveDto.setEmployeeId(leave.getEmployee().getEmployeeId()); // Explicitly set employeeId
+            leaveDto.setAppliedDate(leave.getAppliedDate());
+            leaveDto.setStartDate(leave.getStartDate());
+            leaveDto.setEndDate(leave.getEndDate());
+            leaveDto.setStatus(leave.getStatus());
+            leaveDto.setLeaveType(leave.getLeaveType());
+            leaveDto.setApprovedDate(leave.getApprovedDate());
+            return leaveDto;
+        }).collect(Collectors.toList());
     }
+    
+    
+    
+    
  
     @Override
 	public List<returnLeaveDto> getAllPendingLeaveRequests(String status) {
@@ -62,7 +86,8 @@ public class LeaveServiceImpl implements LeaveService{
         Leave savedLeave = leaveRepository.save(leave);
         return modelMapper.map(savedLeave, LeaveDto.class);
     }
- 
+    
+   
     @Override
     public LeaveDto updateLeave(int id, LeaveDto leaveDto) {
         Leave existingLeave = leaveRepository.findById(id)
@@ -148,36 +173,97 @@ public class LeaveServiceImpl implements LeaveService{
 //		leaveBalance.setBalance(leaveBalance.getBalance() - leaveDays);
 //		leaveBalanceRepository.save(leaveBalance);
 //	}
-    @Override
+    
+    
+    
+    
+    
+//    @Override
+//    @Transactional
+//    public void applyLeave(int id, LeaveDto leaveDto) {
+//        // Check if the employee exists
+//        Employee employee = employeeRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Employee Not Found!!!"));
+//
+//        Leave leave = modelMapper.map(leaveDto, Leave.class);
+//        leave.setEmployee(employee);
+//        leave.setStatus("Pending");
+//        leave.setAppliedDate(LocalDateTime.now());
+//        Leave savedLeave = leaveRepository.save(leave);
+//
+//        // Check if the leave is approved
+//        if ("Approved".equals(savedLeave.getStatus())) {
+//            // Check if the leave is available
+//            if (isLeaveAvailable(employee, savedLeave)) {
+//                leave.setApprovedDate(LocalDateTime.now());
+//                leave.setStatus("Approved");
+//                leaveRepository.save(leave);
+//                updateLeaveBalance(employee, savedLeave);
+//            } else {
+//                throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
+//            }
+//        } else if ("Rejected".equals(savedLeave.getStatus())) {
+//            leave.setApprovedDate(LocalDateTime.now());
+//            leave.setStatus("Rejected");
+//            leaveRepository.save(leave);
+//        }
+//    }
+    
+    
+    
+    
+    
     @Transactional
     public void applyLeave(int id, LeaveDto leaveDto) {
         // Check if the employee exists
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee Not Found!!!"));
 
-        Leave leave = modelMapper.map(leaveDto, Leave.class);
+        Leave leave = new Leave(); // Create new Leave object
         leave.setEmployee(employee);
+        leave.setLeaveType(leaveDto.getLeaveType());
+        leave.setStartDate(leaveDto.getStartDate());
+        leave.setEndDate(leaveDto.getEndDate());
         leave.setStatus("Pending");
         leave.setAppliedDate(LocalDateTime.now());
+
+        // Save the leave request
         Leave savedLeave = leaveRepository.save(leave);
 
         // Check if the leave is approved
         if ("Approved".equals(savedLeave.getStatus())) {
-            // Check if the leave is available
             if (isLeaveAvailable(employee, savedLeave)) {
-                leave.setApprovedDate(LocalDateTime.now());
-                leave.setStatus("Approved");
-                leaveRepository.save(leave);
-                updateLeaveBalance(employee, savedLeave);
+                // Fetch latest entity state before modifying it
+                Leave latestLeave = leaveRepository.findById(savedLeave.getLeaveId())
+                        .orElseThrow(() -> new RuntimeException("Leave Not Found!!!"));
+
+                latestLeave.setApprovedDate(LocalDateTime.now());
+                latestLeave.setStatus("Approved");
+
+                leaveRepository.save(latestLeave); // Save the updated leave
+                updateLeaveBalance(employee, latestLeave);
             } else {
                 throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
             }
         } else if ("Rejected".equals(savedLeave.getStatus())) {
-            leave.setApprovedDate(LocalDateTime.now());
-            leave.setStatus("Rejected");
-            leaveRepository.save(leave);
+            Leave latestLeave = leaveRepository.findById(savedLeave.getLeaveId())
+                    .orElseThrow(() -> new RuntimeException("Leave Not Found!!!"));
+
+            latestLeave.setApprovedDate(LocalDateTime.now());
+            latestLeave.setStatus("Rejected");
+
+            leaveRepository.save(latestLeave); // Save the updated leave
         }
     }
+
+    
+    
+    
+    
+    
+    
+    
+    
 
     private boolean isLeaveAvailable(Employee employee, Leave leave) {
         LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeAndLeaveType(employee, leave.getLeaveType());
