@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,125 +30,157 @@ import jakarta.transaction.Transactional;
 @Service
 public class EmployeeServiceImpl implements EmployeeService, UserDetailsService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
     @Autowired
     private EmployeeRepository employeeRepository;
 
     @Autowired
     private LeaveBalanceRepository leaveBalanceRepository;
-    
+
     @Autowired
     private LeaveRepository leaveRepository;
-    
+
     @Autowired
     private AttendanceRepository attendanceRepository;
 
     @Autowired
     private ModelMapper modelMapper;
-    
+
     @Autowired
     private ShiftRepository shiftRepository;
 
     @Override
-//    public List<returnEmployeeDto> getAllEmployees() {
-//        List<Employee> employees = employeeRepository.findAll();
-//        return employees.stream()
-//                .map(employee -> modelMapper.map(employee, returnEmployeeDto.class))
-//                .collect(Collectors.toList());
-//    }
     public List<returnEmployeeDto> getAllEmployees() {
-        List<Employee> employees = employeeRepository.findAll();
-        System.out.println("Employees: " + employees); // Debug statement
-        return employees.stream()
+        log.info("[EMPLOYEE-SERVICE] Fetching all employees");
+        try {
+            List<Employee> employees = employeeRepository.findAll();
+            log.info("[EMPLOYEE-SERVICE] Successfully fetched {} employees", employees.size());
+
+            return employees.stream()
                 .map(employee -> {
                     returnEmployeeDto dto = modelMapper.map(employee, returnEmployeeDto.class);
-                    System.out.println("Mapped DTO: " + dto); // Debug statement
+                    log.debug("[EMPLOYEE-SERVICE] Mapped DTO: {}", dto);
                     return dto;
                 })
                 .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("[EMPLOYEE-SERVICE] Error fetching employees: {}", e.getMessage(), e);
+            throw e;
+        }
     }
-
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-        Employee employee = modelMapper.map(employeeDto, Employee.class);
-        Employee saved = employeeRepository.save(employee);
+        log.info("[EMPLOYEE-SERVICE] Creating new employee: {}", employeeDto.getUsername());
+        try {
+            Employee employee = modelMapper.map(employeeDto, Employee.class);
+            Employee savedEmployee = employeeRepository.save(employee);
 
-        List<LeaveBalance> leaveBalances = List.of(
-            new LeaveBalance(saved, "Vacation", 10),
-            new LeaveBalance(saved, "Sick Leave", 5),
-            new LeaveBalance(saved, "Casual Leave", 7)
-        );
+            log.info("[EMPLOYEE-SERVICE] Employee created successfully with ID: {}", savedEmployee.getEmployeeId());
 
-        leaveBalances.forEach(leaveBalanceRepository::save);
-        return modelMapper.map(saved, EmployeeDto.class);
+            List<LeaveBalance> leaveBalances = List.of(
+                new LeaveBalance(savedEmployee, "Vacation", 10),
+                new LeaveBalance(savedEmployee, "Sick Leave", 5),
+                new LeaveBalance(savedEmployee, "Casual Leave", 7)
+            );
+
+            leaveBalances.forEach(leaveBalance -> {
+                leaveBalanceRepository.save(leaveBalance);
+                log.info("[EMPLOYEE-SERVICE] Created leave balance '{}' for employee ID: {}", leaveBalance.getLeaveType(), savedEmployee.getEmployeeId());
+            });
+
+            return modelMapper.map(savedEmployee, EmployeeDto.class);
+        } catch (Exception e) {
+            log.error("[EMPLOYEE-SERVICE] Error creating employee: {}. Error: {}", employeeDto.getUsername(), e.getMessage(), e);
+            throw e;
+        }
     }
-//    @Override
-//    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-//        Employee employee = modelMapper.map(employeeDto, Employee.class);
-//        Employee saved = employeeRepository.save(employee);
-//        return modelMapper.map(saved, EmployeeDto.class);
-//    }
-
-
 
     @Override
     public EmployeeDto updateEmployee(int id, EmployeeDto employeeDto) {
-        Employee existing = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
-        Shift shift = shiftRepository.findById(employeeDto.getShiftId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Shift ID"));
-        existing.setUsername(employeeDto.getUsername());
-        existing.setFirstName(employeeDto.getFirstName());
-        existing.setLastName(employeeDto.getLastName());
-        existing.setEmail(employeeDto.getEmail());
-        existing.setPhoneNumber(employeeDto.getPhoneNumber());
-        existing.setDepartment(employeeDto.getDepartment());
-        existing.setRole(employeeDto.getRole());
-        existing.setJoinedDate(employeeDto.getJoinedDate());
-        existing.setManagerId(employeeDto.getManagerId());
-        existing.setPassword(employeeDto.getPassword());
-        existing.setShift(shift);
+        log.info("[EMPLOYEE-SERVICE] Updating employee with ID: {}", id);
+        try {
+            Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("[EMPLOYEE-SERVICE] Employee not found with ID: {}", id);
+                    return new RuntimeException("Employee not found with ID: " + id);
+                });
 
-        Employee updated = employeeRepository.save(existing);
-        return modelMapper.map(updated, EmployeeDto.class);
+            Shift shift = shiftRepository.findById(employeeDto.getShiftId())
+                .orElseThrow(() -> {
+                    log.warn("[EMPLOYEE-SERVICE] Invalid shift ID: {}", employeeDto.getShiftId());
+                    return new IllegalArgumentException("Invalid Shift ID: " + employeeDto.getShiftId());
+                });
+
+            existingEmployee.setUsername(employeeDto.getUsername());
+            existingEmployee.setFirstName(employeeDto.getFirstName());
+            existingEmployee.setLastName(employeeDto.getLastName());
+            existingEmployee.setEmail(employeeDto.getEmail());
+            existingEmployee.setPhoneNumber(employeeDto.getPhoneNumber());
+            existingEmployee.setDepartment(employeeDto.getDepartment());
+            existingEmployee.setRole(employeeDto.getRole());
+            existingEmployee.setJoinedDate(employeeDto.getJoinedDate());
+            existingEmployee.setManagerId(employeeDto.getManagerId());
+            existingEmployee.setPassword(employeeDto.getPassword());
+            existingEmployee.setShift(shift);
+
+            Employee updatedEmployee = employeeRepository.save(existingEmployee);
+            log.info("[EMPLOYEE-SERVICE] Employee with ID: {} updated successfully", id);
+
+            return modelMapper.map(updatedEmployee, EmployeeDto.class);
+        } catch (Exception e) {
+            log.error("[EMPLOYEE-SERVICE] Error updating employee with ID: {}. Error: {}", id, e.getMessage(), e);
+            throw e;
+        }
     }
-    
-//    @Override
-//    public void deleteEmployee(int id) {
-//        if (!employeeRepository.existsById(id)) {
-//            throw new RuntimeException("Employee not found with id: " + id);
-//        }
-//        employeeRepository.deleteById(id);
-//    }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee employee = employeeRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
-        return new org.springframework.security.core.userdetails.User(
-                employee.getUsername(), employee.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(employee.getRole())));
-    }
-    
     @Override
     @Transactional
     public void deleteEmployeeById(int id) {
-        // Check if the employee exists
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with ID: " + id));
+        log.info("[EMPLOYEE-SERVICE] Deleting employee with ID: {}", id);
+        try {
+            Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("[EMPLOYEE-SERVICE] Employee not found with ID: {}", id);
+                    return new RuntimeException("Employee not found with ID: " + id);
+                });
 
-        // Delete related records from the attendance table
-        attendanceRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+            attendanceRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+            log.info("[EMPLOYEE-SERVICE] Deleted attendance records for employee ID: {}", employee.getEmployeeId());
 
-        // Delete related records from the leave table
-        leaveRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+            leaveRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+            log.info("[EMPLOYEE-SERVICE] Deleted leave records for employee ID: {}", employee.getEmployeeId());
 
-        // Delete related records from the leave_balance table
-        leaveBalanceRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+            leaveBalanceRepository.deleteByEmployee_EmployeeId(employee.getEmployeeId());
+            log.info("[EMPLOYEE-SERVICE] Deleted leave balances for employee ID: {}", employee.getEmployeeId());
 
-        // Delete the employee
-        employeeRepository.delete(employee);
+            employeeRepository.delete(employee);
+            log.info("[EMPLOYEE-SERVICE] Employee with ID: {} deleted successfully", id);
+        } catch (Exception e) {
+            log.error("[EMPLOYEE-SERVICE] Error deleting employee with ID: {}. Error: {}", id, e.getMessage(), e);
+            throw e;
+        }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("[EMPLOYEE-SERVICE] Loading user by username: {}", username);
+        try {
+            Employee employee = employeeRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.warn("[EMPLOYEE-SERVICE] User not found with username: {}", username);
+                    return new UsernameNotFoundException("User not found: " + username);
+                });
+
+            log.info("[EMPLOYEE-SERVICE] Successfully loaded user with username: {}", username);
+            return new org.springframework.security.core.userdetails.User(
+                employee.getUsername(), employee.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(employee.getRole()))
+            );
+        } catch (Exception e) {
+            log.error("[EMPLOYEE-SERVICE] Error loading user by username: {}. Error: {}", username, e.getMessage(), e);
+            throw e;
+        }
+    }
 }

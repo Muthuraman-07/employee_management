@@ -1,0 +1,9 @@
+{"properties": [{
+  "name": "LOG_FILE",
+  "type": "java.lang.String",
+  "description": "A description for 'LOG_FILE'"
+}]}{"properties": [{
+  "name": "LOG_PATH",
+  "type": "java.lang.String",
+  "description": "A description for 'LOG_PATH'"
+}]}

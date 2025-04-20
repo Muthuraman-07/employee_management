@@ -1,83 +1,140 @@
 package com.cognizant.employee_management.service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cognizant.employee_management.dto.ShiftDto;
 import com.cognizant.employee_management.model.Shift;
-import com.cognizant.employee_management.repository.EmployeeRepository;
 import com.cognizant.employee_management.repository.ShiftRepository;
+
 @Service
 public class ShiftServiceImpl implements ShiftService {
+
+    private static final Logger log = LoggerFactory.getLogger(ShiftServiceImpl.class);
+
     @Autowired
     private ShiftRepository shiftRepository;
-    
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    
+
     @Autowired
     private ModelMapper modelMapper;
+
     @Override
     public ShiftDto createShift(ShiftDto shiftDto) {
-        Shift shift = modelMapper.map(shiftDto, Shift.class);
-        Shift saved = shiftRepository.save(shift);
-        return modelMapper.map(saved, ShiftDto.class);
+        log.info("[SHIFT-SERVICE] Creating a new shift");
+        try {
+            Shift shift = modelMapper.map(shiftDto, Shift.class);
+            Shift savedShift = shiftRepository.save(shift);
+            log.info("[SHIFT-SERVICE] Shift created successfully with ID: {}", savedShift.getShiftId());
+            return modelMapper.map(savedShift, ShiftDto.class);
+        } catch (Exception e) {
+            log.error("[SHIFT-SERVICE] Error creating shift. Error: {}", e.getMessage(), e);
+            throw e;
+        }
     }
+
     @Override
     public ShiftDto getShiftById(int id) {
-        Shift shift = shiftRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shift not found"));
-        return modelMapper.map(shift, ShiftDto.class);
+        log.info("[SHIFT-SERVICE] Fetching shift with ID: {}", id);
+        try {
+            Shift shift = shiftRepository.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("[SHIFT-SERVICE] Shift not found with ID: {}", id);
+                        return new RuntimeException("Shift not found");
+                    });
+            log.info("[SHIFT-SERVICE] Successfully fetched shift with ID: {}", id);
+            return modelMapper.map(shift, ShiftDto.class);
+        } catch (Exception e) {
+            log.error("[SHIFT-SERVICE] Error fetching shift with ID: {}. Error: {}", id, e.getMessage(), e);
+            throw e;
+        }
     }
+
     @Override
     public List<ShiftDto> getAllShifts() {
-        return shiftRepository.findAll().stream()
-                .map(shift -> modelMapper.map(shift, ShiftDto.class))
-                .collect(Collectors.toList());
+        log.info("[SHIFT-SERVICE] Fetching all shifts");
+        try {
+            List<Shift> shifts = shiftRepository.findAll();
+            log.info("[SHIFT-SERVICE] Successfully fetched {} shifts", shifts.size());
+            return shifts.stream()
+                    .map(shift -> modelMapper.map(shift, ShiftDto.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("[SHIFT-SERVICE] Error fetching all shifts. Error: {}", e.getMessage(), e);
+            throw e;
+        }
     }
+
     @Override
     public ShiftDto updateShift(int id, ShiftDto shiftDto) {
-        Shift existing = shiftRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shift not found"));
-        existing.setShiftDate(shiftDto.getShiftDate());
-        existing.setShiftStartTime(shiftDto.getShiftStartTime());
-        existing.setShiftEndTime(shiftDto.getShiftEndTime());
-        Shift updated = shiftRepository.save(existing);
-        return modelMapper.map(updated, ShiftDto.class);
+        log.info("[SHIFT-SERVICE] Updating shift with ID: {}", id);
+        try {
+            Shift existingShift = shiftRepository.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("[SHIFT-SERVICE] Shift not found with ID: {}", id);
+                        return new RuntimeException("Shift not found");
+                    });
+
+            existingShift.setShiftDate(shiftDto.getShiftDate());
+            existingShift.setShiftStartTime(shiftDto.getShiftStartTime());
+            existingShift.setShiftEndTime(shiftDto.getShiftEndTime());
+
+            Shift updatedShift = shiftRepository.save(existingShift);
+            log.info("[SHIFT-SERVICE] Shift with ID: {} updated successfully", id);
+            return modelMapper.map(updatedShift, ShiftDto.class);
+        } catch (Exception e) {
+            log.error("[SHIFT-SERVICE] Error updating shift with ID: {}. Error: {}", id, e.getMessage(), e);
+            throw e;
+        }
     }
+
     @Override
     public ShiftDto patchShift(int id, ShiftDto shiftDto) {
-        Shift existing = shiftRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shift not found"));
-        if (shiftDto.getShiftDate() != null) {
-            existing.setShiftDate(shiftDto.getShiftDate());
+        log.info("[SHIFT-SERVICE] Patching shift with ID: {}", id);
+        try {
+            Shift existingShift = shiftRepository.findById(id)
+                    .orElseThrow(() -> {
+                        log.warn("[SHIFT-SERVICE] Shift not found with ID: {}", id);
+                        return new RuntimeException("Shift not found");
+                    });
+
+            if (shiftDto.getShiftDate() != null) {
+                existingShift.setShiftDate(shiftDto.getShiftDate());
+            }
+            if (shiftDto.getShiftStartTime() != null) {
+                existingShift.setShiftStartTime(shiftDto.getShiftStartTime());
+            }
+            if (shiftDto.getShiftEndTime() != null) {
+                existingShift.setShiftEndTime(shiftDto.getShiftEndTime());
+            }
+
+            Shift patchedShift = shiftRepository.save(existingShift);
+            log.info("[SHIFT-SERVICE] Shift with ID: {} patched successfully", id);
+            return modelMapper.map(patchedShift, ShiftDto.class);
+        } catch (Exception e) {
+            log.error("[SHIFT-SERVICE] Error patching shift with ID: {}. Error: {}", id, e.getMessage(), e);
+            throw e;
         }
-        if (shiftDto.getShiftStartTime() != null) {
-            existing.setShiftStartTime(shiftDto.getShiftStartTime());
-        }
-        if (shiftDto.getShiftEndTime() != null) {
-            existing.setShiftEndTime(shiftDto.getShiftEndTime());
-        }
-        Shift patched = shiftRepository.save(existing);
-        return modelMapper.map(patched, ShiftDto.class);
     }
-//    @Override
-//    public void deleteShift(int id) {
-//        shiftRepository.deleteById(id);
-//    }
+
     @Override
     public void deleteShift(int id) {
-        if (!shiftRepository.existsById(id)) {
-            throw new RuntimeException("Shift not found with id: " + id);
+        log.info("[SHIFT-SERVICE] Deleting shift with ID: {}", id);
+        try {
+            if (!shiftRepository.existsById(id)) {
+                log.warn("[SHIFT-SERVICE] Shift not found with ID: {}", id);
+                throw new RuntimeException("Shift not found with ID: " + id);
+            }
+            shiftRepository.deleteById(id);
+            log.info("[SHIFT-SERVICE] Shift with ID: {} deleted successfully", id);
+        } catch (Exception e) {
+            log.error("[SHIFT-SERVICE] Error deleting shift with ID: {}. Error: {}", id, e.getMessage(), e);
+            throw e;
         }
-        System.out.println("Shift exists, proceeding to delete."); // Debug statement
-        shiftRepository.deleteById(id);
     }
-    
-    
-
 }
- 

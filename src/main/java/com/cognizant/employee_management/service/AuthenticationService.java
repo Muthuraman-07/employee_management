@@ -7,41 +7,61 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cognizant.employee_management.dto.EmployeeDto;
 import com.cognizant.employee_management.model.Employee;
 import com.cognizant.employee_management.model.LeaveBalance;
 import com.cognizant.employee_management.repository.EmployeeRepository;
 import com.cognizant.employee_management.repository.LeaveBalanceRepository;
-import com.cognizant.employee_management.repository.LeaveRepository;
 
 @Service
 public class AuthenticationService {
-	@Autowired
-	EmployeeRepository employeeRepository;
-	@Autowired
-	PasswordEncoder passwordEncoder;
-	@Autowired
-	private ModelMapper modelMapper;
-	
-	@Autowired
+
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private LeaveBalanceRepository leaveBalanceRepository;
 
-//	public Employee save(Employee employee) {
-//		employee.setPassword(passwordEncoder.encode(employee.getPassword()));
-//		return employeeRepository.save(employee);
-//	}
-	
-	public EmployeeDto save(EmployeeDto employeeDto) {
-		Employee employee= modelMapper.map(employeeDto,Employee.class);
-		employee.setPassword(passwordEncoder.encode(employee.getPassword()));
-		Employee saved=employeeRepository.save(employee);
-		List<LeaveBalance> leaveBalances = List.of(
-	            new LeaveBalance(saved, "Vacation", 10),
-	            new LeaveBalance(saved, "Sick Leave", 5),
-	            new LeaveBalance(saved, "Casual Leave", 7)
-	        );
+    public EmployeeDto save(EmployeeDto employeeDto) {
+        log.info("[AUTHENTICATION-SERVICE] Saving new employee: {}", employeeDto.getUsername());
+        try {
+            // Map DTO to entity and encode the password
+            Employee employee = modelMapper.map(employeeDto, Employee.class);
+            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
-	        leaveBalances.forEach(leaveBalanceRepository::save);
-		return modelMapper.map(saved, EmployeeDto.class);
-	}
+            // Save the employee in the repository
+            Employee savedEmployee = employeeRepository.save(employee);
+            log.info("[AUTHENTICATION-SERVICE] Employee saved successfully with ID: {}", savedEmployee.getEmployeeId());
+
+            // Create default leave balances
+            List<LeaveBalance> leaveBalances = List.of(
+                new LeaveBalance(savedEmployee, "Vacation", 10),
+                new LeaveBalance(savedEmployee, "Sick Leave", 5),
+                new LeaveBalance(savedEmployee, "Casual Leave", 7)
+            );
+
+            leaveBalances.forEach(leaveBalance -> {
+                leaveBalanceRepository.save(leaveBalance);
+                log.info("[AUTHENTICATION-SERVICE] Leave balance '{}' created successfully for employee ID: {}", leaveBalance.getLeaveType(), savedEmployee.getEmployeeId());
+            });
+
+            // Return the mapped DTO
+            log.info("[AUTHENTICATION-SERVICE] Returning saved employee details for ID: {}", savedEmployee.getEmployeeId());
+            return modelMapper.map(savedEmployee, EmployeeDto.class);
+        } catch (Exception e) {
+            log.error("[AUTHENTICATION-SERVICE] Error saving employee: {}. Error: {}", employeeDto.getUsername(), e.getMessage(), e);
+            throw e; // Re-throw the exception for higher-level handling
+        }
+    }
 }
