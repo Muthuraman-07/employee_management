@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.cognizant.employee_management.dto.EmployeeDto;
 import com.cognizant.employee_management.dto.returnEmployeeDto;
 import com.cognizant.employee_management.model.Employee;
-import com.cognizant.employee_management.model.LeaveBalance;
 import com.cognizant.employee_management.model.Shift;
 import com.cognizant.employee_management.repository.AttendanceRepository;
 import com.cognizant.employee_management.repository.EmployeeRepository;
@@ -70,32 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
         }
     }
 
-    @Override
-    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-        log.info("[EMPLOYEE-SERVICE] Creating new employee: {}", employeeDto.getUsername());
-        try {
-            Employee employee = modelMapper.map(employeeDto, Employee.class);
-            Employee savedEmployee = employeeRepository.save(employee);
-
-            log.info("[EMPLOYEE-SERVICE] Employee created successfully with ID: {}", savedEmployee.getEmployeeId());
-
-            List<LeaveBalance> leaveBalances = List.of(
-                new LeaveBalance(savedEmployee, "Vacation", 10),
-                new LeaveBalance(savedEmployee, "Sick Leave", 5),
-                new LeaveBalance(savedEmployee, "Casual Leave", 7)
-            );
-
-            leaveBalances.forEach(leaveBalance -> {
-                leaveBalanceRepository.save(leaveBalance);
-                log.info("[EMPLOYEE-SERVICE] Created leave balance '{}' for employee ID: {}", leaveBalance.getLeaveType(), savedEmployee.getEmployeeId());
-            });
-
-            return modelMapper.map(savedEmployee, EmployeeDto.class);
-        } catch (Exception e) {
-            log.error("[EMPLOYEE-SERVICE] Error creating employee: {}. Error: {}", employeeDto.getUsername(), e.getMessage(), e);
-            throw e;
-        }
-    }
+   
 
     @Override
     public EmployeeDto updateEmployee(int id, EmployeeDto employeeDto) {

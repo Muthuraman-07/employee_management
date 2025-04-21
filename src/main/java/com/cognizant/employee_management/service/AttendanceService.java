@@ -3,20 +3,12 @@ package com.cognizant.employee_management.service;
 import java.util.List;
 
 import com.cognizant.employee_management.dto.AttendanceDto;
+import com.cognizant.employee_management.dto.ReturnAttendanceDto;
 
 public interface AttendanceService {
-    List<AttendanceDto> getAllAttendance();
+	List<ReturnAttendanceDto> getAllAttendance();
 
-//	Attendance saveAttendance(Attendance attendance);
+	AttendanceDto saveAttendance(int id, AttendanceDto attendanceDto);
 
-	AttendanceDto createAttendance(AttendanceDto attendanceDto);
-	AttendanceDto updateAttendance(int id, AttendanceDto dto);
-	 
-//    AttendanceDto patchAttendance(int id,AttendanceDto attendanceDto);
- 
-    void deleteAttendance(int id);
-    
-    void calculateAndUpdateAttendance(AttendanceDto attendanceDto);
-    
-    
+	void deleteAttendance(int id);
 }

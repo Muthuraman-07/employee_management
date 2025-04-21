@@ -15,6 +15,8 @@ public class LeaveBalanceDto {
     @NotNull(message = "Employee cannot be null")
     @JsonIgnore
     private Employee employee;
+    
+    private int employeeId;
  
     @NotNull(message = "Leave Type cannot be null")
     @Size(min = 2, max = 20, message = "Leave Type must be between 2 and 20 characters")

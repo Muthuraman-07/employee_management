@@ -36,20 +36,9 @@ public class EmployeeController {
         }
     }
 
-    @PostMapping("/createEmployee")
-    public ResponseEntity<EmployeeDto> createEmployees(@Valid @RequestBody EmployeeDto employeeDto) {
-        log.info("[EMPLOYEE-CONTROLLER] Creating new employee: {}", employeeDto.getUsername());
-        try {
-            EmployeeDto saved = employeeService.createEmployee(employeeDto);
-            log.info("[EMPLOYEE-CONTROLLER] Successfully created employee: {}", employeeDto.getUsername());
-            return new ResponseEntity<>(saved, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error("[EMPLOYEE-CONTROLLER] Error creating employee: {}. Error: {}", employeeDto.getUsername(), e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+   
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable int id, @Valid @RequestBody EmployeeDto employeeDto) {
         log.info("[EMPLOYEE-CONTROLLER][Employee-ID: {}] Updating employee details", id);
         try {

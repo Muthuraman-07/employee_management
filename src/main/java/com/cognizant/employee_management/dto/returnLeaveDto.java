@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class returnLeaveDto {
 	private int leaveId;
+    private int employeeId;
 	private LocalDateTime appliedDate;
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;

@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/leavebalance")
-@Slf4j // Lombok annotation for logging
+@Slf4j
 public class LeaveBalanceController {
 
     @Autowired
@@ -33,18 +33,6 @@ public class LeaveBalanceController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LeaveBalanceDto> getById(@PathVariable int id) {
-        log.info("[LEAVE-BALANCE-CONTROLLER] Fetching leave balance with ID: {}", id);
-        try {
-            LeaveBalanceDto leaveBalance = leaveBalanceService.getLeaveBalanceById(id);
-            log.info("[LEAVE-BALANCE-CONTROLLER] Successfully fetched leave balance with ID: {}", id);
-            return ResponseEntity.ok(leaveBalance);
-        } catch (Exception e) {
-            log.error("[LEAVE-BALANCE-CONTROLLER] Error fetching leave balance with ID: {}. Error: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<LeaveBalanceDto>> getAll() {
@@ -59,18 +47,7 @@ public class LeaveBalanceController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<LeaveBalanceDto> update(@PathVariable int id, @Valid @RequestBody LeaveBalanceDto dto) {
-        log.info("[LEAVE-BALANCE-CONTROLLER][Employee-ID: {}] Updating leave balance with ID: {}", dto.getEmployee().getEmployeeId(), id);
-        try {
-            LeaveBalanceDto updatedLeaveBalance = leaveBalanceService.updateLeaveBalance(id, dto);
-            log.info("[LEAVE-BALANCE-CONTROLLER][Employee-ID: {}] Successfully updated leave balance with ID: {}", dto.getEmployee().getEmployeeId(), id);
-            return ResponseEntity.ok(updatedLeaveBalance);
-        } catch (Exception e) {
-            log.error("[LEAVE-BALANCE-CONTROLLER][Employee-ID: {}] Error updating leave balance with ID: {}. Error: {}", dto.getEmployee().getEmployeeId(), id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+  
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {

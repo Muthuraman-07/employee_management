@@ -9,7 +9,7 @@ import com.cognizant.employee_management.dto.returnEmployeeDto;
 
 public interface EmployeeService {
 	List<returnEmployeeDto> getAllEmployees();
-	EmployeeDto createEmployee(EmployeeDto employeeDto);
+	
 	EmployeeDto updateEmployee(int id, EmployeeDto employeeDto);
 	void deleteEmployeeById(int id);
 	UserDetails loadUserByUsername(String username);

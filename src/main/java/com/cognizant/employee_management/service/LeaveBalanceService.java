@@ -6,8 +6,8 @@ import com.cognizant.employee_management.dto.LeaveBalanceDto;
 
 public interface LeaveBalanceService {
 	LeaveBalanceDto createLeaveBalance(LeaveBalanceDto leaveBalanceDto);
-    LeaveBalanceDto getLeaveBalanceById(int id);
-    List<LeaveBalanceDto> getAllLeaveBalances();
-    LeaveBalanceDto updateLeaveBalance(int id, LeaveBalanceDto leaveBalanceDto);
-    void deleteLeaveBalance(int id);
+
+	List<LeaveBalanceDto> getAllLeaveBalances();
+
+	void deleteLeaveBalance(int id);
 }

@@ -1,0 +1,25 @@
+2025-04-20 10:34:48 [http-nio-8080-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-20 10:34:48 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-04-20 10:34:48 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2025-04-20 10:34:49 [http-nio-8080-exec-3] INFO  c.c.e.c.ShiftSwapRequestController - [SHIFT-SWAP-CONTROLLER] Creating swap request for requester ID: 999 and approver ID: 398
+2025-04-20 10:34:49 [http-nio-8080-exec-3] INFO  c.c.e.s.ShiftSwapRequestService - [SHIFT-SWAP-SERVICE] Creating shift swap request for requester ID: 999 and approver ID: 398
+2025-04-20 10:34:49 [http-nio-8080-exec-3] INFO  c.c.e.s.ShiftSwapRequestService - [SHIFT-SWAP-SERVICE] Swap request created successfully with ID: 4
+2025-04-20 10:34:49 [http-nio-8080-exec-3] INFO  c.c.e.c.ShiftSwapRequestController - [SHIFT-SWAP-CONTROLLER] Swap request created successfully with ID: 4
+2025-04-20 10:36:35 [http-nio-8080-exec-4] INFO  c.c.e.c.ShiftSwapRequestController - [SHIFT-SWAP-CONTROLLER] Approving swap request by employee for request ID: 2
+2025-04-20 10:36:35 [http-nio-8080-exec-4] INFO  c.c.e.s.ShiftSwapRequestService - [SHIFT-SWAP-SERVICE] Approving swap request by employee for request ID: 2
+2025-04-20 10:36:59 [http-nio-8080-exec-7] INFO  c.c.e.c.ShiftSwapRequestController - [SHIFT-SWAP-CONTROLLER] Approving swap request by employee for request ID: 4
+2025-04-20 10:36:59 [http-nio-8080-exec-7] INFO  c.c.e.s.ShiftSwapRequestService - [SHIFT-SWAP-SERVICE] Approving swap request by employee for request ID: 4
+2025-04-20 10:36:59 [http-nio-8080-exec-7] INFO  c.c.e.s.ShiftSwapRequestService - [SHIFT-SWAP-SERVICE] Swap request with ID: 4 approved by employee successfully
+2025-04-20 10:36:59 [http-nio-8080-exec-7] INFO  c.c.e.c.ShiftSwapRequestController - [SHIFT-SWAP-CONTROLLER] Swap request with ID: 4 approved by employee successfully
+2025-04-20 10:37:07 [http-nio-8080-exec-8] INFO  c.c.e.c.ShiftSwapRequestController - [SHIFT-SWAP-CONTROLLER] Approving swap request by manager for request ID: 4
+2025-04-20 10:37:07 [http-nio-8080-exec-8] INFO  c.c.e.s.ShiftSwapRequestService - [SHIFT-SWAP-SERVICE] Approving swap request by manager for request ID: 4
+2025-04-20 10:37:07 [http-nio-8080-exec-8] INFO  c.c.e.s.ShiftSwapRequestService - [SHIFT-SWAP-SERVICE] Swap request with ID: 4 approved by manager successfully
+2025-04-20 10:37:07 [http-nio-8080-exec-8] INFO  c.c.e.c.ShiftSwapRequestController - [SHIFT-SWAP-CONTROLLER] Swap request with ID: 4 approved by manager successfully
+2025-04-20 10:42:05 [RMI TCP Connection(17)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2025-04-20 10:42:05 [RMI TCP Connection(17)-127.0.0.1] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-20 10:42:05 [tomcat-shutdown] INFO  o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-04-20 10:42:05 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-20 10:42:05 [RMI TCP Connection(17)-127.0.0.1] INFO  o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-04-20 10:42:05 [RMI TCP Connection(17)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-20 10:42:05 [RMI TCP Connection(17)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-04-20 10:42:05 [RMI TCP Connection(17)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
