@@ -99,49 +99,47 @@ public class LeaveServiceImpl implements LeaveService {
 
 	@Transactional
 	@Override
-	public void applyLeave(int id, LeaveDto leaveDto) {
-		// Check if the employee exists
-		Logger log = LoggerFactory.getLogger(LeaveServiceImpl.class);
-		log.info("[LEAVE-SERVICE] Applying leave for employee ID: {}", id);
-		try {
-			Optional<Employee> container = employeeRepository.findById(id);
-			if (!container.isPresent()) {
-				log.warn("[LEAVE-SERVICE] Employee not found with ID: {}", id);
-				throw new RuntimeException("Employee Not Found!!!");
-			}
-			log.info("[LEAVE-SERVICE] Employee found: ID = {}", id);
-			Employee employee = container.get();
-			Leave leave = modelMapper.map(leaveDto, Leave.class);
-			leave.setEmployee(employee);
-			leave.setStatus("Approved");
-			leave.setAppliedDate(LocalDateTime.now());
-			Leave savedLeave = leaveRepository.save(leave);
-			log.info("[LEAVE-SERVICE] Leave applied successfully for employee ID: {}, Leave ID: {}", id,
-					savedLeave.getLeaveId());
+		public Leave applyLeave(int id, LeaveDto leaveDto) {
+		    try {
+		        Optional<Employee> container = employeeRepository.findById(id);
+		        if (!container.isPresent()) {
+		            log.warn("[LEAVE-SERVICE] Employee not found with ID: {}", id);
+		            throw new RuntimeException("Employee Not Found!!!");
+		        }
 
-			if (isLeaveAvailable(employee, savedLeave)) {
-				if ("Approved".equals(savedLeave.getStatus())) {
-					leave.setStatus("Approved");
-					log.info("[LEAVE-SERVICE] Leave is approved for employee ID: {}", id);
-					updateLeaveBalance(employee, savedLeave);
-					log.info("[LEAVE-SERVICE] Leave balance updated successfully for employee ID: {}", id);
-				} else {
-					leave.setStatus("Rejected");
-					log.info("[LEAVE-SERVICE] Leave rejection status updated for employee ID: {}", id);
-				}
-			} else {
-				leave.setStatus("LOP");
-				log.error("[LEAVE-SERVICE] Insufficient leave balance for employee ID: {}, Leave Type: {}", id,
-						savedLeave.getLeaveType());
-				throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
-			}
-			leave.setApprovedDate(LocalDateTime.now());
-			leaveRepository.save(leave);
-		} catch (Exception e) {
-			log.error("[LEAVE-SERVICE] Error applying leave for employee ID: {}. Error: {}", id, e.getMessage(), e);
-			throw e;
+		        log.info("[LEAVE-SERVICE] Employee found: ID = {}", id);
+		        Employee employee = container.get();
+
+		        Leave leave = modelMapper.map(leaveDto, Leave.class);
+		        leave.setEmployee(employee);
+		        leave.setStatus("Approved");
+		        leave.setAppliedDate(LocalDateTime.now());
+		        Leave savedLeave = leaveRepository.save(leave);
+		        log.info("[LEAVE-SERVICE] Leave applied successfully for employee ID: {}, Leave ID: {}", id, savedLeave.getLeaveId());
+
+		        if (isLeaveAvailable(employee, savedLeave)) {
+		            if ("Approved".equals(savedLeave.getStatus())) {
+		                updateLeaveBalance(employee, savedLeave);
+		                log.info("[LEAVE-SERVICE] Leave balance updated successfully for employee ID: {}", id);
+		            } else {
+		                leave.setStatus("Rejected");
+		                log.info("[LEAVE-SERVICE] Leave rejection status updated for employee ID: {}", id);
+		            }
+		        } else {
+		            leave.setStatus("LOP");
+		            leaveRepository.save(leave); // Persist LOP status before throwing exception
+		            log.error("[LEAVE-SERVICE] Insufficient leave balance for employee ID: {}, Leave Type: {}", id, savedLeave.getLeaveType());
+		            throw new RuntimeException("Insufficient leave balance for leave type: " + savedLeave.getLeaveType());
+		        }
+
+		        leave.setApprovedDate(LocalDateTime.now());
+		        return leaveRepository.save(leave); // Return updated Leave object
+		    } catch (Exception e) {
+		        log.error("[LEAVE-SERVICE] Error applying leave for employee ID: {}. Error: {}", id, e.getMessage(), e);
+		        throw e;
+		    }
 		}
-	}
+
 
 	private boolean isLeaveAvailable(Employee employee, Leave leave) {
 		// Find the leave balance for the employee and leave type

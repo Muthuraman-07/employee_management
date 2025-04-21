@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cognizant.employee_management.dto.LeaveDto;
 import com.cognizant.employee_management.dto.returnLeaveDto;
+import com.cognizant.employee_management.model.Leave;
 
 import jakarta.validation.Valid;
 
@@ -12,7 +13,7 @@ public interface LeaveService {
 
 	void deleteLeave(int id);
 
-	void applyLeave(int employeeId, @Valid LeaveDto dto);
+	Leave applyLeave(int employeeId, @Valid LeaveDto dto);
 
 	List<returnLeaveDto> getAllPendingLeaveRequests(String status);
 }

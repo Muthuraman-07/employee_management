@@ -75,8 +75,8 @@ public class AttendanceServiceImpl implements AttendanceService {
         LocalDateTime clockInTime = attendanceDto.getClockInTime();
         LocalDateTime clockOutTime = attendanceDto.getClockOutTime();
 
-        if (!clockInTime.toLocalTime().isBefore(employee.getShift().getShiftStartTime())
-                && !clockOutTime.toLocalTime().isAfter(employee.getShift().getShiftEndTime())
+        if (clockInTime.toLocalTime().isBefore(employee.getShift().getShiftStartTime())
+                && clockOutTime.toLocalTime().isAfter(employee.getShift().getShiftEndTime())
                 && duration.toHours() >= 10) {
             attendance.setWorkHours(duration.toHours());
             attendance.setIsPresent(1);

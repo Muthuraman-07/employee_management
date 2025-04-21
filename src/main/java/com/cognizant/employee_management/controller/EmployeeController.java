@@ -23,7 +23,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/emp/getall")
-//    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<List<returnEmployeeDto>> getAllEmployees() {
         log.info("[EMPLOYEE-CONTROLLER] Fetching all employees");
         try {

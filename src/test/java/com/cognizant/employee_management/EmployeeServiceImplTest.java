@@ -1,324 +1,203 @@
-//package com.cognizant.employee_management;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//import java.time.LocalDate;
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import org.modelmapper.ModelMapper;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//
-//import com.cognizant.employee_management.dto.EmployeeDto;
-//import com.cognizant.employee_management.dto.returnEmployeeDto;
-//import com.cognizant.employee_management.model.Employee;
-//import com.cognizant.employee_management.model.Shift;
-//import com.cognizant.employee_management.repository.EmployeeRepository;
-//import com.cognizant.employee_management.service.EmployeeServiceImpl;
-//
-//@ExtendWith(MockitoExtension.class)
-//public class EmployeeServiceImplTest {
-//
-//    @Mock
-//    private EmployeeRepository employeeRepository;
-//
-//    @Mock
-//    private ModelMapper modelMapper;
-//
-//    @InjectMocks
-//    private EmployeeServiceImpl employeeService;
-//
-//    private Employee employee;
-//    private EmployeeDto employeeDto;
-//    private returnEmployeeDto returnEmployeeDto;
-//
-//    @BeforeEach
-//    void setUp() {
-//        employee = new Employee();
-//        employee.setEmployeeId(1);
-//        employee.setUsername("john_doe");
-//        employee.setPassword("Password123");
-//        employee.setFirstName("John");
-//        employee.setLastName("Doe");
-//        employee.setEmail("john.doe@example.com");
-//        employee.setPhoneNumber("1234567890");
-//        employee.setDepartment("IT");
-//        employee.setRole("USER");
-//        employee.setShift(Shift.MORNING);
-//        employee.setJoinedDate(LocalDate.of(2020, 1, 1));
-//        employee.setManagerId(2);
-//
-//        employeeDto = new EmployeeDto();
-//        employeeDto.setEmployeeId(1);
-//        employeeDto.setUsername("john_doe");
-//        employeeDto.setPassword("Password123");
-//        employeeDto.setFirstName("John");
-//        employeeDto.setLastName("Doe");
-//        employeeDto.setEmail("john.doe@example.com");
-//        employeeDto.setPhoneNumber("1234567890");
-//        employeeDto.setDepartment("IT");
-//        employeeDto.setRole("USER");
-//        employeeDto.setShift(Shift.MORNING);
-//        employeeDto.setJoinedDate(LocalDate.of(2020, 1, 1));
-//        employeeDto.setManagerId(2);
-//
-//        returnEmployeeDto = new returnEmployeeDto();
-//        returnEmployeeDto.setEmployeeId(1);
-//        returnEmployeeDto.setFirstName("john_doe");
-//        returnEmployeeDto.setFirstName("John");
-//        returnEmployeeDto.setLastName("Doe");
-//        returnEmployeeDto.setEmail("john.doe@example.com");
-//        returnEmployeeDto.setPhoneNumber("1234567890");
-//        returnEmployeeDto.setDepartment("IT");
-//        returnEmployeeDto.setRole("USER");
-//        returnEmployeeDto.setShift(Shift.MORNING);
-//        returnEmployeeDto.setJoinedDate(LocalDate.of(2020, 1, 1));
-//        returnEmployeeDto.setManagerId(2);
-//    }
-//
-//    @Test
-//    void testGetAllEmployees() {
-//        when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee));
-//        when(modelMapper.map(employee, returnEmployeeDto.class)).thenReturn(returnEmployeeDto);
-//
-//        List<returnEmployeeDto> result = employeeService.getAllEmployees();
-//
-//        assertNotNull(result);
-//        assertEquals(1, result.size());
-//        assertEquals(returnEmployeeDto, result.get(0));
-//        verify(employeeRepository, times(1)).findAll();
-//    }
-//    @Test
-//    void testCreateEmployee() {
-//        // Mock the model mapper to map EmployeeDto to Employee
-//        when(modelMapper.map(employeeDto, Employee.class)).thenReturn(employee);
-//        
-//        // Mock the repository to save the employee
-//        when(employeeRepository.save(employee)).thenReturn(employee);
-//        
-//        // Mock the model mapper to map Employee to EmployeeDto
-//        when(modelMapper.map(employee, EmployeeDto.class)).thenReturn(employeeDto);
-//
-//        // Call the service method
-//        EmployeeDto result = employeeService.createEmployee(employeeDto);
-//
-//        // Verify the results
-//        assertNotNull(result);
-//        assertEquals(employeeDto, result);
-//        
-//        // Verify the interactions
-//        verify(employeeRepository, times(1)).save(employee);
-//        verify(modelMapper, times(1)).map(employeeDto, Employee.class);
-//        verify(modelMapper, times(1)).map(employee, EmployeeDto.class);
-//    }
-//
-//
-////    @Test
-////    void testCreateEmployee() {
-////        when(modelMapper.map(employeeDto, Employee.class)).thenReturn(employee);
-////        when(employeeRepository.save(employee)).thenReturn(employee);
-////        when(modelMapper.map(employee, EmployeeDto.class)).thenReturn(employeeDto);
-////
-////        EmployeeDto result = employeeService.createEmployee(employeeDto);
-////
-////        assertEquals(employeeDto, result);
-////        verify(employeeRepository, times(1)).save(employee);
-////    }
-//
-//    @Test
-//    void testUpdateEmployee() {
-//        when(employeeRepository.findById(1)).thenReturn(Optional.of(employee));
-//        when(employeeRepository.save(employee)).thenReturn(employee);
-//        when(modelMapper.map(employee, EmployeeDto.class)).thenReturn(employeeDto);
-//
-//        EmployeeDto result = employeeService.updateEmployee(1, employeeDto);
-//
-//        assertEquals(employeeDto, result);
-//        verify(employeeRepository, times(1)).findById(1);
-//        verify(employeeRepository, times(1)).save(employee);
-//    }
-//
-//    @Test
-//    void testDeleteEmployee() {
-//        when(employeeRepository.existsById(1)).thenReturn(true);
-//
-//        employeeService.deleteEmployee(1);
-//
-//        verify(employeeRepository, times(1)).existsById(1);
-//        verify(employeeRepository, times(1)).deleteById(1);
-//    }
-//
-//    @Test
-//    void testLoadUserByUsername() {
-//        when(employeeRepository.findByUsername("john_doe")).thenReturn(Optional.of(employee));
-//
-//        UserDetails userDetails = employeeService.loadUserByUsername("john_doe");
-//
-//        assertNotNull(userDetails);
-//        assertEquals("john_doe", userDetails.getUsername());
-//        verify(employeeRepository, times(1)).findByUsername("john_doe");
-//    }
-//
-//    @Test
-//    void testLoadUserByUsernameNotFound() {
-//        when(employeeRepository.findByUsername("unknown_user")).thenReturn(Optional.empty());
-//
-//        assertThrows(UsernameNotFoundException.class, () -> {
-//            employeeService.loadUserByUsername("unknown_user");
-//        });
-//
-//        verify(employeeRepository, times(1)).findByUsername("unknown_user");
-//    }
-//}
-//
-////package com.cognizant.employee_management;
-////
-////import static org.junit.jupiter.api.Assertions.*;
-////import static org.mockito.Mockito.*;
-////
-////import java.time.LocalDate;
-////import java.util.Arrays;
-////import java.util.List;
-////import java.util.Optional;
-////
-////import org.junit.jupiter.api.BeforeEach;
-////import org.junit.jupiter.api.Test;
-////import org.junit.jupiter.api.extension.ExtendWith;
-////import org.mockito.InjectMocks;
-////import org.mockito.Mock;
-////import org.mockito.junit.jupiter.MockitoExtension;
-////import org.modelmapper.ModelMapper;
-////import org.springframework.security.core.userdetails.UserDetails;
-////import org.springframework.security.core.userdetails.UsernameNotFoundException;
-////
-////import com.cognizant.employee_management.dto.EmployeeDto;
-////import com.cognizant.employee_management.dto.returnEmployeeDto;
-////import com.cognizant.employee_management.model.Employee;
-////import com.cognizant.employee_management.model.Shift;
-////import com.cognizant.employee_management.repository.EmployeeRepository;
-////import com.cognizant.employee_management.service.EmployeeServiceImpl;
-////
-////@ExtendWith(MockitoExtension.class)
-////public class EmployeeServiceImplTest {
-////
-////    @Mock
-////    private EmployeeRepository employeeRepository;
-////
-////    @Mock
-////    private ModelMapper modelMapper;
-////
-////    @InjectMocks
-////    private EmployeeServiceImpl employeeService;
-////
-////    private Employee employee;
-////    private EmployeeDto employeeDto;
-////
-////    @BeforeEach
-////    void setUp() {
-////        employee = new Employee();
-////        employee.setEmployeeId(1);
-////        employee.setUsername("john_doe");
-////        employee.setPassword("Password123");
-////        employee.setFirstName("John");
-////        employee.setLastName("Doe");
-////        employee.setEmail("john.doe@example.com");
-////        employee.setPhoneNumber("1234567890");
-////        employee.setDepartment("IT");
-////        employee.setRole("USER");
-////        employee.setShift(Shift.MORNING);
-////        employee.setJoinedDate(LocalDate.of(2020, 1, 1));
-////        employee.setManagerId(2);
-////
-////        employeeDto = new EmployeeDto();
-////        employeeDto.setEmployeeId(1);
-////        employeeDto.setUsername("john_doe");
-////        employeeDto.setPassword("Password123");
-////        employeeDto.setFirstName("John");
-////        employeeDto.setLastName("Doe");
-////        employeeDto.setEmail("john.doe@example.com");
-////        employeeDto.setPhoneNumber("1234567890");
-////        employeeDto.setDepartment("IT");
-////        employeeDto.setRole("USER");
-////        employeeDto.setShift(Shift.MORNING);
-////        employeeDto.setJoinedDate(LocalDate.of(2020, 1, 1));
-////        employeeDto.setManagerId(2);
-////    }
-////
-////    @Test
-////    void testGetAllEmployees() {
-////        when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee));
-////        when(modelMapper.map(employee, EmployeeDto.class)).thenReturn(employeeDto);
-////
-////        List<returnEmployeeDto> result = employeeService.getAllEmployees();
-////
-////        assertEquals(1, result.size());
-////        assertEquals(employeeDto, result.get(0));
-////        verify(employeeRepository, times(1)).findAll();
-////    }
-////
-////    @Test
-////    void testCreateEmployee() {
-////        when(modelMapper.map(employeeDto, Employee.class)).thenReturn(employee);
-////        when(employeeRepository.save(employee)).thenReturn(employee);
-////        when(modelMapper.map(employee, EmployeeDto.class)).thenReturn(employeeDto);
-////
-////        EmployeeDto result = employeeService.createEmployee(employeeDto);
-////
-////        assertEquals(employeeDto, result);
-////        verify(employeeRepository, times(1)).save(employee);
-////    }
-////
-////    @Test
-////    void testUpdateEmployee() {
-////        when(employeeRepository.findById(1)).thenReturn(Optional.of(employee));
-////        when(employeeRepository.save(employee)).thenReturn(employee);
-////        when(modelMapper.map(employee, EmployeeDto.class)).thenReturn(employeeDto);
-////
-////        EmployeeDto result = employeeService.updateEmployee(1, employeeDto);
-////
-////        assertEquals(employeeDto, result);
-////        verify(employeeRepository, times(1)).findById(1);
-////        verify(employeeRepository, times(1)).save(employee);
-////    }
-////
-////    @Test
-////    void testDeleteEmployee() {
-////        when(employeeRepository.existsById(1)).thenReturn(true);
-////
-////        employeeService.deleteEmployee(1);
-////
-////        verify(employeeRepository, times(1)).existsById(1);
-////        verify(employeeRepository, times(1)).deleteById(1);
-////    }
-////
-////    @Test
-////    void testLoadUserByUsername() {
-////        when(employeeRepository.findByUsername("john_doe")).thenReturn(Optional.of(employee));
-////
-////        UserDetails userDetails = employeeService.loadUserByUsername("john_doe");
-////
-////        assertNotNull(userDetails);
-////        assertEquals("john_doe", userDetails.getUsername());
-////        verify(employeeRepository, times(1)).findByUsername("john_doe");
-////    }
-////
-////    @Test
-////    void testLoadUserByUsernameNotFound() {
-////        when(employeeRepository.findByUsername("unknown_user")).thenReturn(Optional.empty());
-////
-////        assertThrows(UsernameNotFoundException.class, () -> {
-////            employeeService.loadUserByUsername("unknown_user");
-////        });
-////
-////        verify(employeeRepository, times(1)).findByUsername("unknown_user");
-////    }
-////}
+package com.cognizant.employee_management;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.cognizant.employee_management.dto.EmployeeDto;
+import com.cognizant.employee_management.dto.returnEmployeeDto;
+import com.cognizant.employee_management.model.Employee;
+import com.cognizant.employee_management.model.Shift;
+import com.cognizant.employee_management.repository.AttendanceRepository;
+import com.cognizant.employee_management.repository.EmployeeRepository;
+import com.cognizant.employee_management.repository.LeaveBalanceRepository;
+import com.cognizant.employee_management.repository.LeaveRepository;
+import com.cognizant.employee_management.repository.ShiftRepository;
+import com.cognizant.employee_management.service.EmployeeServiceImpl;
+
+@ExtendWith(MockitoExtension.class)
+public class EmployeeServiceImplTest {
+
+    @Mock
+    private EmployeeRepository employeeRepository;
+
+    @Mock
+    private LeaveBalanceRepository leaveBalanceRepository;
+
+    @Mock
+    private LeaveRepository leaveRepository;
+
+    @Mock
+    private AttendanceRepository attendanceRepository;
+
+    @Mock
+    private ShiftRepository shiftRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
+
+    @InjectMocks
+    private EmployeeServiceImpl employeeService;
+
+    private Employee employee;
+    private EmployeeDto employeeDto;
+    private Shift shift;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        // Initialize Employee and EmployeeDto
+        employee = new Employee();
+        employee.setEmployeeId(1);
+        employee.setManagerId(10);
+        employee.setUsername("johndoe");
+        employee.setPassword("SecureP@ss123");
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmail("john.doe@example.com");
+        employee.setPhoneNumber("9876543210");
+        employee.setDepartment("HR");
+        employee.setRole("ROLE_EMPLOYEE");
+        employee.setJoinedDate(LocalDate.of(2022, 1, 1));
+
+        shift = new Shift();
+        shift.setShiftId(101);
+
+        employeeDto = new EmployeeDto();
+        employeeDto.setEmployeeId(1);
+        employeeDto.setManagerId(10);
+        employeeDto.setUsername("johndoe");
+        employeeDto.setPassword("SecureP@ss123");
+        employeeDto.setFirstName("John");
+        employeeDto.setLastName("Doe");
+        employeeDto.setEmail("john.doe@example.com");
+        employeeDto.setPhoneNumber("9876543210");
+        employeeDto.setDepartment("HR");
+        employeeDto.setRole("ROLE_EMPLOYEE");
+        employeeDto.setShiftId(101);
+        employeeDto.setJoinedDate(LocalDate.of(2022, 1, 1));
+    }
+
+    @Test
+    void testGetAllEmployees() {
+        // Mock behavior
+        when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee));
+        when(modelMapper.map(employee, returnEmployeeDto.class)).thenReturn(new returnEmployeeDto());
+
+        // Test
+        List<returnEmployeeDto> result = employeeService.getAllEmployees();
+
+        // Assertions
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(employeeRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testUpdateEmployee_Success() {
+        // Mock behavior
+        when(employeeRepository.findById(1)).thenReturn(Optional.of(employee));
+        when(shiftRepository.findById(101)).thenReturn(Optional.of(shift));
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+        when(modelMapper.map(employee, EmployeeDto.class)).thenReturn(employeeDto);
+
+        // Test
+        EmployeeDto result = employeeService.updateEmployee(1, employeeDto);
+
+        // Assertions
+        assertNotNull(result);
+        assertEquals(employeeDto.getEmployeeId(), result.getEmployeeId());
+        verify(employeeRepository, times(1)).findById(1);
+        verify(shiftRepository, times(1)).findById(101);
+        verify(employeeRepository, times(1)).save(any(Employee.class));
+    }
+
+    @Test
+    void testUpdateEmployee_EmployeeNotFound() {
+        // Mock behavior
+        when(employeeRepository.findById(99)).thenReturn(Optional.empty());
+
+        // Test
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> employeeService.updateEmployee(99, employeeDto));
+
+        // Assertions
+        assertTrue(exception.getMessage().contains("Employee not found"));
+        verify(employeeRepository, times(1)).findById(99);
+    }
+
+    @Test
+    void testDeleteEmployeeById_Success() {
+        // Mock behavior
+        when(employeeRepository.findById(1)).thenReturn(Optional.of(employee));
+        doNothing().when(attendanceRepository).deleteByEmployee_EmployeeId(1);
+        doNothing().when(leaveRepository).deleteByEmployee_EmployeeId(1);
+        doNothing().when(leaveBalanceRepository).deleteByEmployee_EmployeeId(1);
+        doNothing().when(employeeRepository).delete(employee);
+
+        // Test
+        assertDoesNotThrow(() -> employeeService.deleteEmployeeById(1));
+
+        // Verify
+        verify(employeeRepository, times(1)).findById(1);
+        verify(attendanceRepository, times(1)).deleteByEmployee_EmployeeId(1);
+        verify(leaveRepository, times(1)).deleteByEmployee_EmployeeId(1);
+        verify(leaveBalanceRepository, times(1)).deleteByEmployee_EmployeeId(1);
+        verify(employeeRepository, times(1)).delete(employee);
+    }
+
+    @Test
+    void testDeleteEmployeeById_EmployeeNotFound() {
+        // Mock behavior
+        when(employeeRepository.findById(99)).thenReturn(Optional.empty());
+
+        // Test
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> employeeService.deleteEmployeeById(99));
+
+        // Assertions
+        assertTrue(exception.getMessage().contains("Employee not found"));
+        verify(employeeRepository, times(1)).findById(99);
+    }
+
+    @Test
+    void testLoadUserByUsername_Success() {
+        // Mock behavior
+        when(employeeRepository.findByUsername("johndoe")).thenReturn(Optional.of(employee));
+
+        // Test
+        UserDetails result = employeeService.loadUserByUsername("johndoe");
+
+        // Assertions
+        assertNotNull(result);
+        assertEquals(employee.getUsername(), result.getUsername());
+        verify(employeeRepository, times(1)).findByUsername("johndoe");
+    }
+
+    @Test
+    void testLoadUserByUsername_UserNotFound() {
+        // Mock behavior
+        when(employeeRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+
+        // Test
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> employeeService.loadUserByUsername("nonexistent"));
+
+        // Assertions
+        assertTrue(exception.getMessage().contains("User not found"));
+        verify(employeeRepository, times(1)).findByUsername("nonexistent");
+    }
+}

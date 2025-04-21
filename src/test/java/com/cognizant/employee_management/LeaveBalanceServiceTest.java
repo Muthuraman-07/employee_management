@@ -1,124 +1,121 @@
-//package com.cognizant.employee_management;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import org.modelmapper.ModelMapper;
-//
-//import com.cognizant.employee_management.dto.LeaveBalanceDto;
-//import com.cognizant.employee_management.model.Employee;
-//import com.cognizant.employee_management.model.LeaveBalance;
-//import com.cognizant.employee_management.repository.LeaveBalanceRepository;
-//import com.cognizant.employee_management.service.LeaveBalanceServiceImpl;
-//
-//@ExtendWith(MockitoExtension.class)
-//public class LeaveBalanceServiceTest {
-//
-//    @Mock
-//    private LeaveBalanceRepository leaveBalanceRepository;
-//
-//    @Mock
-//    private ModelMapper modelMapper;
-//
-//    @InjectMocks
-//    private LeaveBalanceServiceImpl leaveBalanceService;
-//
-//    private LeaveBalance leaveBalance;
-//    private LeaveBalanceDto leaveBalanceDto;
-//
-//    @BeforeEach
-//    void setUp() {
-//        leaveBalance = new LeaveBalance();
-//        leaveBalance.setLeaveBalanceID(1);
-//        leaveBalance.setEmployee(new Employee());
-//        leaveBalance.setLeaveType("Sick Leave");
-//        leaveBalance.setBalance(10);
-//
-//        leaveBalanceDto = new LeaveBalanceDto();
-//        leaveBalanceDto.setLeaveBalanceID(1);
-//        leaveBalanceDto.setEmployee(new Employee());
-//        leaveBalanceDto.setLeaveType("Sick Leave");
-//        leaveBalanceDto.setBalance(10);
-//    }
-//
-//    @Test
-//    void testCreateLeaveBalance() {
-//        when(modelMapper.map(leaveBalanceDto, LeaveBalance.class)).thenReturn(leaveBalance);
-//        when(leaveBalanceRepository.save(leaveBalance)).thenReturn(leaveBalance);
-//        when(modelMapper.map(leaveBalance, LeaveBalanceDto.class)).thenReturn(leaveBalanceDto);
-//
-//        LeaveBalanceDto result = leaveBalanceService.createLeaveBalance(leaveBalanceDto);
-//
-//        assertEquals(leaveBalanceDto, result);
-//        verify(leaveBalanceRepository, times(1)).save(leaveBalance);
-//    }
-//
-//    @Test
-//    void testGetLeaveBalanceById() {
-//        when(leaveBalanceRepository.findById(1)).thenReturn(Optional.of(leaveBalance));
-//        when(modelMapper.map(leaveBalance, LeaveBalanceDto.class)).thenReturn(leaveBalanceDto);
-//
-//        LeaveBalanceDto result = leaveBalanceService.getLeaveBalanceById(1);
-//
-//        assertEquals(leaveBalanceDto, result);
-//        verify(leaveBalanceRepository, times(1)).findById(1);
-//    }
-//
-//    @Test
-//    void testGetAllLeaveBalances() {
-//        when(leaveBalanceRepository.findAll()).thenReturn(Arrays.asList(leaveBalance));
-//        when(modelMapper.map(leaveBalance, LeaveBalanceDto.class)).thenReturn(leaveBalanceDto);
-//
-//        List<LeaveBalanceDto> result = leaveBalanceService.getAllLeaveBalances();
-//
-//        assertEquals(1, result.size());
-//        assertEquals(leaveBalanceDto, result.get(0));
-//        verify(leaveBalanceRepository, times(1)).findAll();
-//    }
-//
-//    @Test
-//    void testUpdateLeaveBalance() {
-//        when(leaveBalanceRepository.findById(1)).thenReturn(Optional.of(leaveBalance));
-//        when(leaveBalanceRepository.save(leaveBalance)).thenReturn(leaveBalance);
-//        when(modelMapper.map(leaveBalance, LeaveBalanceDto.class)).thenReturn(leaveBalanceDto);
-//
-//        LeaveBalanceDto result = leaveBalanceService.updateLeaveBalance(1, leaveBalanceDto);
-//
-//        assertEquals(leaveBalanceDto, result);
-//        verify(leaveBalanceRepository, times(1)).findById(1);
-//        verify(leaveBalanceRepository, times(1)).save(leaveBalance);
-//    }
-//
-////    @Test
-////    void testDeleteLeaveBalance() {
-////        when(leaveBalanceRepository.existsById(1)).thenReturn(true);
-////
-////        leaveBalanceService.deleteLeaveBalance(1);
-////
-////        verify(leaveBalanceRepository, times(1)).existsById(1);
-////        verify(leaveBalanceRepository, times(1)).deleteById(1);
-////    }
-//    @Test
-//    void testDeleteLeaveBalance() {
-//        // Mock the repository to return true for existsById
-//        when(leaveBalanceRepository.existsById(1)).thenReturn(true);
-//
-//        // Call the service method
-//        leaveBalanceService.deleteLeaveBalance(1);
-//
-//        // Verify the interactions
-//        verify(leaveBalanceRepository, times(1)).existsById(1);
-//        verify(leaveBalanceRepository, times(1)).deleteById(1);
-//    }
-//
-//}
+package com.cognizant.employee_management;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+
+import com.cognizant.employee_management.dto.LeaveBalanceDto;
+import com.cognizant.employee_management.model.Employee;
+import com.cognizant.employee_management.model.LeaveBalance;
+import com.cognizant.employee_management.repository.LeaveBalanceRepository;
+import com.cognizant.employee_management.service.LeaveBalanceServiceImpl;
+
+@ExtendWith(MockitoExtension.class)
+public class LeaveBalanceServiceTest {
+
+    @Mock
+    private LeaveBalanceRepository leaveBalanceRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
+
+    @InjectMocks
+    private LeaveBalanceServiceImpl leaveBalanceService;
+
+    private LeaveBalance leaveBalance;
+    private LeaveBalanceDto leaveBalanceDto;
+    private Employee employee;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        // Initialize test data
+        employee = new Employee();
+        employee.setEmployeeId(1);
+
+        leaveBalance = new LeaveBalance();
+        leaveBalance.setLeaveBalanceID(100);
+        leaveBalance.setEmployee(employee);
+        leaveBalance.setLeaveType("Sick Leave");
+        leaveBalance.setBalance(10);
+
+        leaveBalanceDto = new LeaveBalanceDto();
+        leaveBalanceDto.setLeaveBalanceID(100);
+        leaveBalanceDto.setEmployee(employee);
+        leaveBalanceDto.setEmployeeId(1);
+        leaveBalanceDto.setLeaveType("Sick Leave");
+        leaveBalanceDto.setBalance(10);
+    }
+
+    @Test
+    void testCreateLeaveBalance() {
+        // Mock behavior
+        when(modelMapper.map(leaveBalanceDto, LeaveBalance.class)).thenReturn(leaveBalance);
+        when(leaveBalanceRepository.save(any(LeaveBalance.class))).thenReturn(leaveBalance);
+        when(modelMapper.map(leaveBalance, LeaveBalanceDto.class)).thenReturn(leaveBalanceDto);
+
+        // Test
+        LeaveBalanceDto result = leaveBalanceService.createLeaveBalance(leaveBalanceDto);
+
+        // Assertions
+        assertNotNull(result);
+        assertEquals(leaveBalanceDto.getLeaveBalanceID(), result.getLeaveBalanceID());
+        assertEquals(leaveBalanceDto.getBalance(), result.getBalance());
+        verify(leaveBalanceRepository, times(1)).save(any(LeaveBalance.class));
+    }
+
+    @Test
+    void testGetAllLeaveBalances() {
+        // Mock behavior
+        when(leaveBalanceRepository.findAll()).thenReturn(Arrays.asList(leaveBalance));
+
+        // Test
+        List<LeaveBalanceDto> result = leaveBalanceService.getAllLeaveBalances();
+
+        // Assertions
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(leaveBalance.getLeaveBalanceID(), result.get(0).getLeaveBalanceID());
+        verify(leaveBalanceRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testDeleteLeaveBalance_Success() {
+        // Mock behavior
+        when(leaveBalanceRepository.existsById(100)).thenReturn(true);
+        doNothing().when(leaveBalanceRepository).deleteById(100);
+
+        // Test
+        leaveBalanceService.deleteLeaveBalance(100);
+
+        // Verify
+        verify(leaveBalanceRepository, times(1)).existsById(100);
+        verify(leaveBalanceRepository, times(1)).deleteById(100);
+    }
+
+    @Test
+    void testDeleteLeaveBalance_NotFound() {
+        // Mock behavior
+        when(leaveBalanceRepository.existsById(99)).thenReturn(false);
+
+        // Test
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> leaveBalanceService.deleteLeaveBalance(99));
+
+        // Assertions
+        assertTrue(exception.getMessage().contains("LeaveBalance not found"));
+        verify(leaveBalanceRepository, times(1)).existsById(99);
+    }
+}

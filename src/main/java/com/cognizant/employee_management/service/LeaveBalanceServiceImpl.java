@@ -41,19 +41,49 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
 		}
 	}
 
+//	@Override
+//	public List<LeaveBalanceDto> getAllLeaveBalances() {
+//		log.info("[LEAVE-BALANCE-SERVICE] Fetching all leave balances");
+//		try {
+//			List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
+//			log.info("[LEAVE-BALANCE-SERVICE] Successfully fetched {} leave balances", leaveBalances.size());
+//			return leaveBalances.stream().map(lb -> modelMapper.map(lb, LeaveBalanceDto.class))
+//					.collect(Collectors.toList());
+//		} catch (Exception e) {
+//			log.error("[LEAVE-BALANCE-SERVICE] Error fetching all leave balances. Error: {}", e.getMessage(), e);
+//			throw e;
+//		}
+//	}
+	
 	@Override
 	public List<LeaveBalanceDto> getAllLeaveBalances() {
-		log.info("[LEAVE-BALANCE-SERVICE] Fetching all leave balances");
-		try {
-			List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
-			log.info("[LEAVE-BALANCE-SERVICE] Successfully fetched {} leave balances", leaveBalances.size());
-			return leaveBalances.stream().map(lb -> modelMapper.map(lb, LeaveBalanceDto.class))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			log.error("[LEAVE-BALANCE-SERVICE] Error fetching all leave balances. Error: {}", e.getMessage(), e);
-			throw e;
-		}
+	    log.info("[LEAVE-BALANCE-SERVICE] Fetching all leave balances");
+	    try {
+	        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
+	        log.info("[LEAVE-BALANCE-SERVICE] Successfully fetched {} leave balances", leaveBalances.size());
+
+	        // Map each LeaveBalance to LeaveBalanceDto explicitly
+	        return leaveBalances.stream()
+	                .map(leaveBalance -> {
+	                    LeaveBalanceDto leaveBalanceDto = new LeaveBalanceDto();
+	                    
+	                    // Explicit property mappings
+	                    leaveBalanceDto.setLeaveBalanceID(leaveBalance.getLeaveBalanceID());
+	                    leaveBalanceDto.setLeaveType(leaveBalance.getLeaveType());
+	                    leaveBalanceDto.setBalance(leaveBalance.getBalance());
+	                    
+	                    // Map employeeId explicitly to avoid ambiguity
+	                    leaveBalanceDto.setEmployeeId(leaveBalance.getEmployee().getEmployeeId());
+
+	                    return leaveBalanceDto;
+	                })
+	                .collect(Collectors.toList());
+	    } catch (Exception e) {
+	        log.error("[LEAVE-BALANCE-SERVICE] Error fetching all leave balances. Error: {}", e.getMessage(), e);
+	        throw e;
+	    }
 	}
+
 
 	@Override
 	public void deleteLeaveBalance(int id) {

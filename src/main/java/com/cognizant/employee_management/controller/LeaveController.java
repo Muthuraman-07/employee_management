@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.employee_management.dto.LeaveDto;
 import com.cognizant.employee_management.dto.returnLeaveDto;
+import com.cognizant.employee_management.model.Leave;
 import com.cognizant.employee_management.service.LeaveService;
 
 @RestController
@@ -72,13 +73,14 @@ public class LeaveController {
     public ResponseEntity<String> applyLeave(@PathVariable int id, @RequestBody LeaveDto leaveDto) {
         log.info("[LEAVE-CONTROLLER] Applying leave for employee ID: {}", id);
         try {
-            leaveService.applyLeave(id, leaveDto);
+            Leave leave = leaveService.applyLeave(id, leaveDto); // Updated service method to return Leave object
             log.info("[LEAVE-CONTROLLER] Leave successfully applied for employee ID: {}", id);
-            return ResponseEntity.ok("Leave applied successfully");
+            return ResponseEntity.ok("Leave applied successfully. Status: " + leave.getStatus());
         } catch (Exception e) {
             log.error("[LEAVE-CONTROLLER] Error applying leave for employee ID: {}. Error: {}", id, e.getMessage(), e);
             return ResponseEntity.status(500).body("Error applying leave");
         }
     }
+
 }
 
