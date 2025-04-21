@@ -36,8 +36,6 @@ public class EmployeeController {
         }
     }
 
-   
-
     @PutMapping("/update/{id}")
     public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable int id, @Valid @RequestBody EmployeeDto employeeDto) {
         log.info("[EMPLOYEE-CONTROLLER][Employee-ID: {}] Updating employee details", id);

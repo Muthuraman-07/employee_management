@@ -44,15 +44,21 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     // @PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<EmployeeDto> register(@Valid @RequestBody EmployeeDto employee) {
+    public ResponseEntity<String> register(@Valid @RequestBody EmployeeDto employee) {
         log.info("[AUTHENTICATION-CONTROLLER] Registering new employee: {}", employee.getUsername());
         try {
+            // Check if the employee ID already exists
+            if (authService.existsById(employee.getEmployeeId())) {
+                log.error("[AUTHENTICATION-CONTROLLER] Employee ID already exists: {}", employee.getEmployeeId());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Employee ID already exists: " + employee.getEmployeeId()); // Return 409 Conflict status with message
+            }
+
             EmployeeDto savedEmployee = authService.save(employee);
             log.info("[AUTHENTICATION-CONTROLLER] Successfully registered employee: {}", employee.getUsername());
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Employee registered successfully with ID: " + savedEmployee.getEmployeeId());
         } catch (Exception e) {
             log.error("[AUTHENTICATION-CONTROLLER] Error registering employee: {}. Error: {}", employee.getUsername(), e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering employee: " + e.getMessage());
         }
     }
 
