@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/employee")
 @Slf4j
 public class EmployeeController {
 
@@ -23,7 +23,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/emp/getall")
-    @PreAuthorize("hasRole('MANAGER')")
+//    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<List<returnEmployeeDto>> getAllEmployees() {
         log.info("[EMPLOYEE-CONTROLLER] Fetching all employees");
         try {
@@ -32,7 +32,7 @@ public class EmployeeController {
             return ResponseEntity.ok(employees);
         } catch (Exception e) {
             log.error("[EMPLOYEE-CONTROLLER] Error fetching employees: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -45,7 +45,7 @@ public class EmployeeController {
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             log.error("[EMPLOYEE-CONTROLLER][Employee-ID: {}] Error updating employee: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -59,7 +59,7 @@ public class EmployeeController {
             return ResponseEntity.ok("Employee deleted successfully.");
         } catch (Exception e) {
             log.error("[EMPLOYEE-CONTROLLER][Employee-ID: {}] Error deleting employee: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error deleting employee: " + e.getMessage());
         }
     }

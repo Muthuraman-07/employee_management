@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/auth")
-@Slf4j // Lombok annotation for logging
+@Slf4j
 public class AuthenticationController {
 
     @Autowired
@@ -58,7 +58,7 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Employee registered successfully with ID: " + savedEmployee.getEmployeeId());
         } catch (Exception e) {
             log.error("[AUTHENTICATION-CONTROLLER] Error registering employee: {}. Error: {}", employee.getUsername(), e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering employee: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error registering employee: " + e.getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ public class AuthenticationController {
                     .body("Authentication failed: " + ex.getMessage());
         } catch (Exception e) {
             log.error("[AUTHENTICATION-CONTROLLER] Unexpected error during login for username: {}. Error: {}", request.getUsername(), e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("An unexpected error occurred: " + e.getMessage());
         }
     }

@@ -25,12 +25,13 @@ public class AttendanceController {
     public ResponseEntity<List<ReturnAttendanceDto>> getAllAttendance() {
         log.info("[ATTENDANCE-CONTROLLER] Fetching all attendance records");
         try {
+        	
             List<ReturnAttendanceDto> attendanceList = attendanceService.getAllAttendance();
             log.info("[ATTENDANCE-CONTROLLER] Successfully retrieved {} attendance records", attendanceList.size());
             return ResponseEntity.ok(attendanceList);
         } catch (Exception e) {
             log.error("[ATTENDANCE-CONTROLLER] Error retrieving attendance records: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
     }
 
@@ -38,12 +39,16 @@ public class AttendanceController {
     public ResponseEntity<String> saveAttendance(@PathVariable int id, @RequestBody AttendanceDto attendanceDto) {
         log.info("[ATTENDANCE-CONTROLLER][Employee-ID: {}] Applying attendance update", id);
         try {
+        	if(!attendanceDto.clockOutTime.isAfter(attendanceDto.clockInTime))
+        	{
+        		throw new IllegalArgumentException("Clock-out time must be after clock-in time.");
+        	}
             attendanceService.saveAttendance(id,attendanceDto);
             log.info("[ATTENDANCE-CONTROLLER][Employee-ID: {}] Attendance update successful", id);
             return ResponseEntity.ok("Attendance updated successfully.");
         } catch (Exception e) {
             log.error("[ATTENDANCE-CONTROLLER][Employee-ID: {}] Error updating attendance: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error updating attendance: " + e.getMessage());
         }
     }
@@ -59,7 +64,7 @@ public class AttendanceController {
             return ResponseEntity.ok("Deleted successfully.");
         } catch (Exception e) {
             log.error("[ATTENDANCE-CONTROLLER] Error deleting attendance record with ID: {}: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting attendance: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error deleting attendance: " + e.getMessage());
         }
     }
 }

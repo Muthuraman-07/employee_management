@@ -29,7 +29,7 @@ public class LeaveBalanceController {
             return ResponseEntity.status(HttpStatus.CREATED).body(savedLeaveBalance);
         } catch (Exception e) {
             log.error("[LEAVE-BALANCE-CONTROLLER] Error creating leave balance for employee: {}. Error: {}", dto.getEmployee().getEmployeeId(), e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -43,7 +43,7 @@ public class LeaveBalanceController {
             return ResponseEntity.ok(leaveBalances);
         } catch (Exception e) {
             log.error("[LEAVE-BALANCE-CONTROLLER] Error fetching all leave balances. Error: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -58,7 +58,7 @@ public class LeaveBalanceController {
             return ResponseEntity.ok("LeaveBalance deleted successfully.");
         } catch (Exception e) {
             log.error("[LEAVE-BALANCE-CONTROLLER] Error deleting leave balance with ID: {}. Error: {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting LeaveBalance: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error deleting LeaveBalance: " + e.getMessage());
         }
     }
 }

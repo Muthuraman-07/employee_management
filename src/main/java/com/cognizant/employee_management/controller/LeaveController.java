@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,7 @@ public class LeaveController {
 			return ResponseEntity.ok(leaves);
 		} catch (Exception e) {
 			log.error("[LEAVE-CONTROLLER] Error fetching all leaves. Error: {}", e.getMessage(), e);
-			return ResponseEntity.status(500).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
 
@@ -52,7 +53,7 @@ public class LeaveController {
 		} catch (Exception e) {
 			log.error("[LEAVE-CONTROLLER] Error fetching leave requests with status: {}. Error: {}", status,
 					e.getMessage(), e);
-			return ResponseEntity.status(500).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
 
@@ -65,7 +66,7 @@ public class LeaveController {
 			return ResponseEntity.ok("Leave deleted successfully");
 		} catch (Exception e) {
 			log.error("[LEAVE-CONTROLLER] Error deleting leave with ID: {}. Error: {}", id, e.getMessage(), e);
-			return ResponseEntity.status(404).body("Error deleting leave");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error deleting leave");
 		}
 	}
 
@@ -82,7 +83,7 @@ public class LeaveController {
 		} catch (Exception e) {
 			log.error("[LEAVE-CONTROLLER] Unexpected error applying leave for employee ID: {}. Error: {}", id,
 					e.getMessage(), e);
-			return ResponseEntity.status(500).body("Unexpected error applying leave");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unexpected error applying leave");
 		}
 	}
 }

@@ -2,6 +2,7 @@ package com.cognizant.employee_management.service;
 
 import java.util.List;
 
+import com.cognizant.employee_management.dto.ReturnSwapRequestDTO;
 import com.cognizant.employee_management.dto.ShiftDto;
 
 public interface ShiftService {
@@ -15,5 +16,7 @@ public interface ShiftService {
 
     void deleteShift(int id);
 
-    
+    ReturnSwapRequestDTO requestShiftSwap(int employeeId, int shiftId);
+
+    ReturnSwapRequestDTO approveShiftSwap(int requestId, boolean approved);
 }

@@ -11,11 +11,11 @@ public class AttendanceDto {
  
     @NotNull(message = "Clock In Time cannot be null")
     @PastOrPresent(message = "Clock In Time must be in the past or present")
-    private LocalDateTime clockInTime;
+    public LocalDateTime clockInTime;
  
     @NotNull(message = "Clock Out Time cannot be null")
     @PastOrPresent(message = "Clock Out Time must be in the past or present")
-    private LocalDateTime clockOutTime;
+	public LocalDateTime clockOutTime;
  
  
 }

@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/shifts")
-@Slf4j // Lombok annotation for logging
+@Slf4j
 public class ShiftController {
 
 	@Autowired
@@ -37,7 +37,7 @@ public class ShiftController {
 			return new ResponseEntity<>(createdShift, HttpStatus.CREATED);
 		} catch (Exception e) {
 			log.error("[SHIFT-CONTROLLER] Error creating shift: {}", e.getMessage(), e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 	}
 
@@ -63,7 +63,7 @@ public class ShiftController {
 			return new ResponseEntity<>(shifts, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("[SHIFT-CONTROLLER] Error fetching all shifts: {}", e.getMessage(), e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class ShiftController {
 			return new ResponseEntity<>(updatedShift, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("[SHIFT-CONTROLLER] Error updating shift with ID: {}. Error: {}", id, e.getMessage(), e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class ShiftController {
 			return ResponseEntity.ok("Shift deleted successfully.");
 		} catch (Exception e) {
 			log.error("[SHIFT-CONTROLLER] Error deleting shift with ID: {}. Error: {}", id, e.getMessage(), e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body("Error deleting shift: " + e.getMessage());
 		}
 	}

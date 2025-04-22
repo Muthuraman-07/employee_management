@@ -9,10 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cognizant.employee_management.dto.ReturnSwapRequestDTO;
 import com.cognizant.employee_management.dto.ShiftDto;
+import com.cognizant.employee_management.model.Employee;
 import com.cognizant.employee_management.model.Shift;
+import com.cognizant.employee_management.model.ShiftRequest;
 import com.cognizant.employee_management.repository.EmployeeRepository;
 import com.cognizant.employee_management.repository.ShiftRepository;
+import com.cognizant.employee_management.repository.ShiftRequestRepository;
 
 @Service
 public class ShiftServiceImpl implements ShiftService {
@@ -25,7 +29,8 @@ public class ShiftServiceImpl implements ShiftService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    
+    @Autowired
+    private ShiftRequestRepository shiftRequestRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -111,7 +116,56 @@ public class ShiftServiceImpl implements ShiftService {
         }
     }
 
-    
+    @Override
+    public ReturnSwapRequestDTO requestShiftSwap(int employeeId, int shiftId) {
+        log.info("[SHIFT-SERVICE] Requesting shift swap for employee ID: {} and shift ID: {}", employeeId, shiftId);
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        Shift shift = shiftRepository.findById(shiftId)
+                .orElseThrow(() -> new RuntimeException("Shift not found"));
 
-   
+        ShiftRequest shiftRequest = new ShiftRequest();
+        shiftRequest.setEmployee(employee);
+        shiftRequest.setRequestedShift(shift);
+        shiftRequest.setStatus("Pending");
+        shiftRequest.setApprovedByManager(false);
+
+        ShiftRequest savedRequest = shiftRequestRepository.save(shiftRequest);
+        log.info("[SHIFT-SERVICE] Shift swap request created successfully with ID: {}", savedRequest.getId());
+        return modelMapper.map(savedRequest, ReturnSwapRequestDTO.class);
+    }
+
+    @Override
+    public ReturnSwapRequestDTO approveShiftSwap(int requestId, boolean status) {
+        log.info("[SHIFT-SERVICE] Approving shift swap request ID: {}", requestId);
+        ShiftRequest shiftRequest = shiftRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Shift request not found"));
+
+        if (status) {
+            shiftRequest.setStatus("APPROVED");
+            
+            Employee existingEmployee = employeeRepository.findById(shiftRequest.getEmployee().getEmployeeId())
+                    .orElseThrow(() -> {
+                        log.warn("[EMPLOYEE-SERVICE] Employee not found with ID: {}", shiftRequest.getEmployee().getEmployeeId());
+                        return new RuntimeException("Employee not found with ID: " + shiftRequest.getEmployee().getEmployeeId());
+                    });
+            
+            Shift shift = shiftRepository.findById(shiftRequest.getRequestedShift().getShiftId())
+                    .orElseThrow(() -> {
+                        log.warn("[EMPLOYEE-SERVICE] Invalid shift ID: {}",shiftRequest.getRequestedShift().getShiftId());
+                        return new IllegalArgumentException("Invalid Shift ID: " +shiftRequest.getRequestedShift().getShiftId());
+                    });
+            
+            existingEmployee.setShift(shift);
+            employeeRepository.save(existingEmployee);
+            shiftRequest.setApprovedByManager(true);
+            
+        } else {
+            shiftRequest.setStatus("REJECTED");
+        }
+
+        ShiftRequest updatedRequest = shiftRequestRepository.save(shiftRequest);
+        log.info("[SHIFT-SERVICE] Shift swap request ID: {} updated successfully", requestId);
+        return modelMapper.map(updatedRequest, ReturnSwapRequestDTO.class);
+    }
 }
