@@ -22,7 +22,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping("/emp/getall")
+    @GetMapping("/getAll")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<List<returnEmployeeDto>> getAllEmployees() {
         log.info("[EMPLOYEE-CONTROLLER] Fetching all employees");

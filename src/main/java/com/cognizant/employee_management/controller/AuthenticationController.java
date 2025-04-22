@@ -44,7 +44,7 @@ public class AuthenticationController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    @PreAuthorize("hasRole('MANAGER')")
+//    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<String> register(@Valid @RequestBody EmployeeDto employee) {
         log.info("[AUTHENTICATION-CONTROLLER] Registering new employee: {}", employee.getUsername());
         try {

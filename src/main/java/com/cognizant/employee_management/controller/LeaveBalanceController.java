@@ -22,7 +22,7 @@ public class LeaveBalanceController {
     private LeaveBalanceService leaveBalanceService;
 
     @PostMapping("/createLeaveBalance")
-    @PreAuthorize("hasRole('MANAGER')")
+    
     public ResponseEntity<LeaveBalanceDto> create(@Valid @RequestBody LeaveBalanceDto dto) {
         log.info("[LEAVE-BALANCE-CONTROLLER] Creating leave balance for employee: {}", dto.getEmployee().getEmployeeId());
         try {
@@ -52,7 +52,7 @@ public class LeaveBalanceController {
   
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('MANAGER')")
+//    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<String> delete(@PathVariable int id) {
         log.info("[LEAVE-BALANCE-CONTROLLER] Deleting leave balance with ID: {}", id);
         try {

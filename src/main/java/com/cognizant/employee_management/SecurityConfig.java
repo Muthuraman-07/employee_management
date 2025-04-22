@@ -35,11 +35,11 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**","/api/shifts/**","/api/employee/**","api/leave/**","/api/leavebalance/**").permitAll()
 
                 .requestMatchers("/api/manager/**").hasRole("MANAGER")
 
-                .requestMatchers("/api/attendance/**","api/employee/update/*","/api/leavebalance/getAll","/api/leave/**").hasAnyRole("EMPLOYEE", "MANAGER")
+                .requestMatchers("/api/attendance/**").hasAnyRole("EMPLOYEE", "MANAGER")
 
                 .anyRequest().authenticated()
 
