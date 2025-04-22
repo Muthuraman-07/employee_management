@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.cognizant.employee_management.dto.LeaveBalanceDto;
 import com.cognizant.employee_management.service.LeaveBalanceService;
@@ -20,7 +21,8 @@ public class LeaveBalanceController {
     @Autowired
     private LeaveBalanceService leaveBalanceService;
 
-    @PostMapping
+    @PostMapping("/createLeaveBalance")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<LeaveBalanceDto> create(@Valid @RequestBody LeaveBalanceDto dto) {
         log.info("[LEAVE-BALANCE-CONTROLLER] Creating leave balance for employee: {}", dto.getEmployee().getEmployeeId());
         try {
@@ -50,6 +52,7 @@ public class LeaveBalanceController {
   
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<String> delete(@PathVariable int id) {
         log.info("[LEAVE-BALANCE-CONTROLLER] Deleting leave balance with ID: {}", id);
         try {

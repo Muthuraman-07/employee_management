@@ -35,14 +35,11 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers("/v3/api-docs/**",    // Allow access to OpenAPI docs
-                        "/swagger-ui/**",     // Allow access to Swagger UI
-                        "/swagger-ui.html" ,
-                        "/api/auth/**","/api/leave/**","/api/leavebalance/**","/api/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
 
                 .requestMatchers("/api/manager/**").hasRole("MANAGER")
 
-                .requestMatchers("/api/employee/**").hasAnyRole("EMPLOYEE", "MANAGER")
+                .requestMatchers("/api/attendance/**","api/employee/update/*","/api/leavebalance/getAll","/api/leave/**").hasAnyRole("EMPLOYEE", "MANAGER")
 
                 .anyRequest().authenticated()
 

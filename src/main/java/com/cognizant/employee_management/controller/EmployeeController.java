@@ -23,7 +23,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/emp/getall")
-//    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<List<returnEmployeeDto>> getAllEmployees() {
         log.info("[EMPLOYEE-CONTROLLER] Fetching all employees");
         try {
@@ -50,7 +50,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/deleteEmployee/{id}")
-    // @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<String> deleteEmployeeById(@PathVariable int id) {
         log.info("[EMPLOYEE-CONTROLLER][Employee-ID: {}] Deleting employee", id);
         try {

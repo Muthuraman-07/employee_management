@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,8 @@ public class ShiftController {
 	@Autowired
 	private ShiftService shiftService;
 
-	@PostMapping
+	@PostMapping("/createShift")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<ShiftDto> createShift(@Valid @RequestBody ShiftDto shiftDto) {
 		log.info("[SHIFT-CONTROLLER] Creating new shift");
 		try {
@@ -54,7 +56,7 @@ public class ShiftController {
 		}
 	}
 
-	@GetMapping
+	@GetMapping("/getAll")
 	public ResponseEntity<List<ShiftDto>> getAllShifts() {
 		log.info("[SHIFT-CONTROLLER] Fetching all shifts");
 		try {
@@ -68,6 +70,7 @@ public class ShiftController {
 	}
 
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<ShiftDto> updateShift(@PathVariable int id, @Valid @RequestBody ShiftDto shiftDto) {
 		log.info("[SHIFT-CONTROLLER] Updating shift with ID: {}", id);
 		try {
@@ -81,6 +84,7 @@ public class ShiftController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<String> deleteShift(@PathVariable int id) {
 		log.info("[SHIFT-CONTROLLER] Deleting shift with ID: {}", id);
 		try {

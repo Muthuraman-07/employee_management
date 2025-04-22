@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.cognizant.employee_management.dto.AttendanceDto;
 import com.cognizant.employee_management.dto.ReturnAttendanceDto;
@@ -35,7 +36,7 @@ public class AttendanceController {
         }
     }
 
-    @PostMapping("/mark/{id}")
+    @PostMapping("/mark/{id}")    
     public ResponseEntity<String> saveAttendance(@PathVariable int id, @RequestBody AttendanceDto attendanceDto) {
         log.info("[ATTENDANCE-CONTROLLER][Employee-ID: {}] Applying attendance update", id);
         try {

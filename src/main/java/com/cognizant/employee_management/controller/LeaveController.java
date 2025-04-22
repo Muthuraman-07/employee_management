@@ -29,7 +29,7 @@ public class LeaveController {
 	@Autowired
 	private LeaveService leaveService;
 
-	@GetMapping("/all")
+	@GetMapping("/getAll")
 	public ResponseEntity<List<returnLeaveDto>> getAllLeaves() {
 		log.info("[LEAVE-CONTROLLER] Fetching all leaves");
 		try {
