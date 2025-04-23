@@ -18,10 +18,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import com.cognizant.employee_management.dto.ShiftDto;
-import com.cognizant.employee_management.model.Shift;
-import com.cognizant.employee_management.repository.ShiftRepository;
-import com.cognizant.employee_management.service.ShiftServiceImpl;
+import com.cognizant.employeemanagement.dto.ShiftDto;
+import com.cognizant.employeemanagement.model.Shift;
+import com.cognizant.employeemanagement.repository.ShiftRepository;
+import com.cognizant.employeemanagement.service.ShiftServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class ShiftServiceTest {

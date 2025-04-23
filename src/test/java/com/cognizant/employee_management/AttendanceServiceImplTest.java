@@ -1,11 +1,9 @@
 package com.cognizant.employee_management;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,12 +22,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import com.cognizant.employee_management.dto.AttendanceDto;
-import com.cognizant.employee_management.model.Attendance;
-import com.cognizant.employee_management.model.Employee;
-import com.cognizant.employee_management.repository.AttendanceRepository;
-import com.cognizant.employee_management.repository.EmployeeRepository;
-import com.cognizant.employee_management.service.AttendanceServiceImpl;
+import com.cognizant.employeemanagement.dto.AttendanceDto;
+import com.cognizant.employeemanagement.model.Attendance;
+import com.cognizant.employeemanagement.model.Employee;
+import com.cognizant.employeemanagement.repository.AttendanceRepository;
+import com.cognizant.employeemanagement.repository.EmployeeRepository;
+import com.cognizant.employeemanagement.service.AttendanceServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class AttendanceServiceImplTest {

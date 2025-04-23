@@ -1,0 +1,99 @@
+package com.cognizant.employeemanagement.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cognizant.employeemanagement.dto.ShiftDto;
+import com.cognizant.employeemanagement.service.ShiftService;
+
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequestMapping("/api/shifts")
+@Slf4j
+public class ShiftController {
+
+	@Autowired
+	private ShiftService shiftService;
+
+	@PostMapping("/create-shift")
+	@PreAuthorize("hasRole('MANAGER')")
+	public ResponseEntity<ShiftDto> createShift(@Valid @RequestBody ShiftDto shiftDto) {
+		log.info("[SHIFT-CONTROLLER] Creating new shift");
+		try {
+			ShiftDto createdShift = shiftService.createShift(shiftDto);
+			log.info("[SHIFT-CONTROLLER] Successfully created shift with ID: {}", createdShift.getShiftId());
+			return new ResponseEntity<>(createdShift, HttpStatus.CREATED);
+		} catch (Exception e) {
+			log.error("[SHIFT-CONTROLLER] Error creating shift: {}", e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+	}
+
+	@GetMapping("/get-shift/{shiftId}")
+	public ResponseEntity<ShiftDto> getShiftById(@PathVariable int shiftId) {
+		log.info("[SHIFT-CONTROLLER] Fetching shift with ID: {}", shiftId);
+		try {
+			ShiftDto shift = shiftService.getShiftById(shiftId);
+			log.info("[SHIFT-CONTROLLER] Successfully fetched shift with ID: {}", shiftId);
+			return new ResponseEntity<>(shift, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("[SHIFT-CONTROLLER] Error fetching shift with ID: {}. Error: {}", shiftId, e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+	}
+
+	@GetMapping("/get-all-shift-records")
+	public ResponseEntity<List<ShiftDto>> getAllShifts() {
+		log.info("[SHIFT-CONTROLLER] Fetching all shifts");
+		try {
+			List<ShiftDto> shifts = shiftService.getAllShifts();
+			log.info("[SHIFT-CONTROLLER] Successfully fetched {} shifts", shifts.size());
+			return new ResponseEntity<>(shifts, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("[SHIFT-CONTROLLER] Error fetching all shifts: {}", e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+	}
+
+	@PutMapping("/update-shift-details/{shiftId}")
+	@PreAuthorize("hasRole('MANAGER')")
+	public ResponseEntity<ShiftDto> updateShift(@PathVariable int shiftId, @Valid @RequestBody ShiftDto shiftDto) {
+		log.info("[SHIFT-CONTROLLER] Updating shift with ID: {}", shiftId);
+		try {
+			ShiftDto updatedShift = shiftService.updateShift(shiftId, shiftDto);
+			log.info("[SHIFT-CONTROLLER] Successfully updated shift with ID: {}", shiftId);
+			return new ResponseEntity<>(updatedShift, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("[SHIFT-CONTROLLER] Error updating shift with ID: {}. Error: {}", shiftId, e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+	}
+
+	@DeleteMapping("/delete-shift/{shiftId}")
+	@PreAuthorize("hasRole('MANAGER')")
+	public ResponseEntity<String> deleteShift(@PathVariable int shiftId) {
+		log.info("[SHIFT-CONTROLLER] Deleting shift with ID: {}", shiftId);
+		try {
+			shiftService.deleteShift(shiftId);
+			log.info("[SHIFT-CONTROLLER] Successfully deleted shift with ID: {}", shiftId);
+			return ResponseEntity.ok("Shift deleted successfully.");
+		} catch (Exception e) {
+			log.error("[SHIFT-CONTROLLER] Error deleting shift with ID: {}. Error: {}", shiftId, e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error deleting shift: " + e.getMessage());
+		}
+	}
+}

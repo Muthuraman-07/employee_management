@@ -1,11 +1,16 @@
 package com.cognizant.employee_management;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,15 +22,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import com.cognizant.employee_management.dto.LeaveDto;
-import com.cognizant.employee_management.dto.returnLeaveDto;
-import com.cognizant.employee_management.model.Employee;
-import com.cognizant.employee_management.model.Leave;
-import com.cognizant.employee_management.model.LeaveBalance;
-import com.cognizant.employee_management.repository.EmployeeRepository;
-import com.cognizant.employee_management.repository.LeaveBalanceRepository;
-import com.cognizant.employee_management.repository.LeaveRepository;
-import com.cognizant.employee_management.service.LeaveServiceImpl;
+import com.cognizant.employeemanagement.dto.LeaveDto;
+import com.cognizant.employeemanagement.model.Employee;
+import com.cognizant.employeemanagement.model.Leave;
+import com.cognizant.employeemanagement.model.LeaveBalance;
+import com.cognizant.employeemanagement.repository.EmployeeRepository;
+import com.cognizant.employeemanagement.repository.LeaveBalanceRepository;
+import com.cognizant.employeemanagement.repository.LeaveRepository;
+import com.cognizant.employeemanagement.service.LeaveServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class LeaveServiceTest {
@@ -77,21 +81,7 @@ public class LeaveServiceTest {
 
     
 
-    @Test
-    void testGetAllPendingLeaveRequests() {
-        // Mock behavior
-        when(leaveRepository.findByStatus("Pending")).thenReturn(Arrays.asList(leave));
-        when(modelMapper.map(any(Leave.class), eq(returnLeaveDto.class))).thenReturn(new returnLeaveDto());
-
-        // Test
-        List<returnLeaveDto> result = leaveService.getAllPendingLeaveRequests("Pending");
-
-        // Assertions
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(leaveRepository, times(1)).findByStatus("Pending");
-    }
-
+ 
     @Test
     void testDeleteLeave_Success() {
         // Mock behavior

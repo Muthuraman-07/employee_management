@@ -1,11 +1,17 @@
 package com.cognizant.employee_management;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,11 +22,11 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import com.cognizant.employee_management.dto.LeaveBalanceDto;
-import com.cognizant.employee_management.model.Employee;
-import com.cognizant.employee_management.model.LeaveBalance;
-import com.cognizant.employee_management.repository.LeaveBalanceRepository;
-import com.cognizant.employee_management.service.LeaveBalanceServiceImpl;
+import com.cognizant.employeemanagement.dto.LeaveBalanceDto;
+import com.cognizant.employeemanagement.model.Employee;
+import com.cognizant.employeemanagement.model.LeaveBalance;
+import com.cognizant.employeemanagement.repository.LeaveBalanceRepository;
+import com.cognizant.employeemanagement.service.LeaveBalanceServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class LeaveBalanceServiceTest {

@@ -1,7 +1,15 @@
 package com.cognizant.employee_management;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -19,16 +27,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.cognizant.employee_management.dto.EmployeeDto;
-import com.cognizant.employee_management.dto.returnEmployeeDto;
-import com.cognizant.employee_management.model.Employee;
-import com.cognizant.employee_management.model.Shift;
-import com.cognizant.employee_management.repository.AttendanceRepository;
-import com.cognizant.employee_management.repository.EmployeeRepository;
-import com.cognizant.employee_management.repository.LeaveBalanceRepository;
-import com.cognizant.employee_management.repository.LeaveRepository;
-import com.cognizant.employee_management.repository.ShiftRepository;
-import com.cognizant.employee_management.service.EmployeeServiceImpl;
+import com.cognizant.employeemanagement.dto.EmployeeDto;
+import com.cognizant.employeemanagement.dto.ReturnEmployeeDto;
+import com.cognizant.employeemanagement.model.Employee;
+import com.cognizant.employeemanagement.model.Shift;
+import com.cognizant.employeemanagement.repository.AttendanceRepository;
+import com.cognizant.employeemanagement.repository.EmployeeRepository;
+import com.cognizant.employeemanagement.repository.LeaveBalanceRepository;
+import com.cognizant.employeemanagement.repository.LeaveRepository;
+import com.cognizant.employeemanagement.repository.ShiftRepository;
+import com.cognizant.employeemanagement.service.EmployeeServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceImplTest {
@@ -98,10 +106,10 @@ public class EmployeeServiceImplTest {
     void testGetAllEmployees() {
         // Mock behavior
         when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee));
-        when(modelMapper.map(employee, returnEmployeeDto.class)).thenReturn(new returnEmployeeDto());
+        when(modelMapper.map(employee, ReturnEmployeeDto.class)).thenReturn(new ReturnEmployeeDto());
 
         // Test
-        List<returnEmployeeDto> result = employeeService.getAllEmployees();
+        List<ReturnEmployeeDto> result = employeeService.getAllEmployees();
 
         // Assertions
         assertNotNull(result);

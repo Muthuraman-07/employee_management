@@ -14,13 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
- 
-import com.cognizant.employee_management.dto.EmployeeDto;
-import com.cognizant.employee_management.model.Employee;
-import com.cognizant.employee_management.model.LeaveBalance;
-import com.cognizant.employee_management.repository.EmployeeRepository;
-import com.cognizant.employee_management.repository.LeaveBalanceRepository;
-import com.cognizant.employee_management.service.AuthenticationService;
+
+import com.cognizant.employeemanagement.dto.EmployeeDto;
+import com.cognizant.employeemanagement.model.Employee;
+import com.cognizant.employeemanagement.model.LeaveBalance;
+import com.cognizant.employeemanagement.repository.EmployeeRepository;
+import com.cognizant.employeemanagement.repository.LeaveBalanceRepository;
+import com.cognizant.employeemanagement.service.AuthenticationService;
+
 import org.modelmapper.ModelMapper;
  
 @ExtendWith(MockitoExtension.class)
